@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор заказа Herbalife</title>
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%2378be20'/%3E%3Cg transform='translate(6,6) scale(0.5)'%3E%3Cpath d='M16 2H8C5 2 3 4 3 7V17C3 20 5 22 8 22H16C19 22 21 20 21 17V7C21 4 19 2 16 2Z' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M10.5 7H13.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.5 12H8.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M11.5 12H12.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.5 12H16.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.5 16H8.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M11.5 16H12.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.5 16H16.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+        }
+
+        .hl-green {
+            color: #78be20;
+        }
+
+        .hl-bg-green {
+            background-color: #78be20;
+        }
+
+        .hl-bg-dark {
+            background-color: #242424;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity 0.3s ease;
+        }
+
+        .fade-enter-from,
+        .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app" class="h-screen flex flex-col lg:flex-row overflow-hidden text-slate-800">
+
+        <div class="flex-1 flex flex-col h-full relative z-10">
+            <header
+                class="bg-white px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm z-20">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 hl-bg-green rounded-full flex items-center justify-center text-white shadow-lg shadow-green-600/20">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 2H8C5 2 3 4 3 7V17C3 20 5 22 8 22H16C19 22 21 20 21 17V7C21 4 19 2 16 2Z"
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M10.5 7H13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M7.5 12H8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M11.5 12H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M15.5 12H16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M7.5 16H8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M11.5 16H12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M15.5 16H16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900">Калькулятор заказа Herbalife</h1>
+                </div>
+
+                <div class="flex flex-col gap-2 items-end">
+                    <!-- My Discount (Purchase Price) -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-slate-400 hidden sm:inline">моя скидка</span>
+                        <div class="flex bg-slate-100 p-1 rounded-lg">
+                            <button v-for="disc in myDiscounts" :key="'my'+disc" @click="myDiscount = disc"
+                                :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', myDiscount === disc ? 'bg-white shadow text-slate-900' : 'text-slate-400 hover:text-slate-600']">
+                                {{ disc === 100 ? '100%' : disc + '%' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Client Discount (Selling Price) -->
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-slate-400 hidden sm:inline">продаю под</span>
+                        <div class="flex bg-slate-100 p-1 rounded-lg">
+                            <button v-for="disc in clientDiscounts" :key="'client'+disc" @click="clientDiscount = disc"
+                                :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', clientDiscount === disc ? 'bg-white shadow text-green-600' : 'text-slate-500 hover:text-slate-700']">
+                                {{ disc === 100 ? '100%' : disc + '%' }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+                <div class="relative">
+                    <input v-model="searchQuery" type="text" placeholder="Поиск продукта (название или SKU)..."
+                        class="w-full pl-10 pr-4 py-3 rounded-xl border-0 ring-1 ring-slate-200 focus:ring-2 focus:ring-green-500 shadow-sm transition-all bg-white outline-none">
+                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+
+                <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
+                    <button @click="selectedCategory = 'all'"
+                        :class="['whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold border transition-colors', selectedCategory === 'all' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300']">Все</button>
+                    <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat"
+                        :class="['whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold border transition-colors', selectedCategory === cat ? 'bg-green-600 text-white border-green-600' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300']">
+                        {{ cat }}
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto bg-slate-50">
+                <div v-for="cat in categories" :key="cat">
+                    <div v-if="groupedProducts[cat]" class="mb-2">
+                        <h3 v-if="selectedCategory === 'all'"
+                            class="sticky top-0 z-10 bg-slate-50/95 backdrop-blur px-6 py-3 text-lg font-bold text-slate-800 shadow-sm border-b border-slate-100/50">
+                            {{ cat }}</h3>
+
+                        <div class="flex flex-col gap-2 px-6 pt-2">
+                            <div v-for="product in groupedProducts[cat]" :key="product.sku"
+                                :class="['flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:shadow-md transition-all group relative overflow-hidden', getCardClass(product)]">
+
+                                <span class="text-[10px] font-mono text-slate-400 w-8 shrink-0">{{ product.sku }}</span>
+
+                                <div class="flex-grow min-w-0 pr-2">
+                                    <h3 class="font-medium text-slate-800 text-sm leading-tight truncate"
+                                        :title="product.name">{{ product.name }}</h3>
+                                </div>
+
+                                <span
+                                    class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">{{
+                                    product.vp }} VP</span>
+
+                                <div class="text-right shrink-0 min-w-[80px]">
+                                    <p class="text-sm font-bold text-slate-900 leading-none">{{
+                                        formatCurrency(getPrice(product, clientDiscount)) }}</p>
+                                </div>
+
+                                <button @click="addToCart(product)"
+                                    class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-green-600 transition-colors shadow-md active:scale-95 shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="filteredProducts.length === 0" class="text-center py-20 text-slate-400">
+                    <p>Ничего не найдено</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-[400px] bg-white border-l border-slate-200 flex flex-col shadow-2xl z-30">
+            <div class="p-6 bg-slate-900 text-white flex justify-between items-center">
+                <h2 class="font-bold text-lg">Ваш заказ</h2>
+                <span class="bg-white/20 px-2 py-0.5 rounded text-sm">{{ cartItemCount }} поз.</span>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-3" ref="cartContainer">
+                <div v-if="cart.length === 0" class="flex flex-col items-center justify-center h-full text-slate-300">
+                    <svg class="w-16 h-16 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                        </path>
+                    </svg>
+                    <p class="text-sm font-medium">Корзина пуста</p>
+                    <p class="text-xs mt-1 text-slate-400">Выберите товары из списка слева</p>
+                </div>
+
+                <div v-for="item in cart" :key="item.product.sku"
+                    class="flex gap-3 items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-slate-900 truncate">{{ item.product.name }}</p>
+                        <p class="text-xs text-slate-500">{{ formatCurrency(getPrice(item.product, clientDiscount)) }}
+                            / шт</p>
+                    </div>
+
+                    <div class="flex items-center gap-1 bg-white border rounded-lg px-2 py-1 shadow-sm">
+                        <button @click="updateQuantity(item, -1)"
+                            class="text-slate-400 hover:text-red-500 font-bold px-1 flex-shrink-0">−</button>
+                        <input type="number" v-model.number="item.qty" @change="validateQuantity(item)"
+                            class="w-12 text-center font-bold text-sm bg-transparent focus:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-green-500 rounded p-0 border-none appearance-none hover:appearance-none">
+                        <button @click="updateQuantity(item, 1)"
+                            class="text-slate-400 hover:text-green-600 font-bold px-1 flex-shrink-0">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white border-t border-slate-200 p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+                <div class="grid grid-cols-[1.5fr_1fr] gap-4 mb-6">
+                    <div
+                        class="flex flex-col justify-center gap-2.5 px-3 py-2 bg-slate-50/50 rounded-xl border border-slate-100/50">
+                        <!-- Delivery Control -->
+                        <div class="flex items-center justify-between group">
+                            <label class="flex items-center gap-2 cursor-pointer select-none">
+                                <div class="relative flex items-center">
+                                    <input type="checkbox" v-model="hasDelivery"
+                                        class="peer appearance-none w-4 h-4 border-2 border-slate-300 rounded transition-colors checked:bg-green-500 checked:border-green-500">
+                                    <svg class="absolute w-2.5 h-2.5 text-white left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
+                                        viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
+                                <span
+                                    class="text-sm font-bold text-slate-500 group-hover:text-slate-700 transition-colors">Доставка</span>
+                            </label>
+                            <input type="number" v-model="deliveryCost" :disabled="!hasDelivery"
+                                class="w-16 text-right text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-md px-2 py-1 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 disabled:opacity-40 disabled:bg-slate-50 transition-all placeholder-slate-300 shadow-sm"
+                                placeholder="0">
+                        </div>
+
+                        <!-- Simple Copy Control -->
+                        <label class="flex items-center gap-2 cursor-pointer select-none group">
+                            <div class="relative flex items-center">
+                                <input type="checkbox" v-model="simpleCopy"
+                                    class="peer appearance-none w-4 h-4 border-2 border-slate-300 rounded transition-colors checked:bg-green-500 checked:border-green-500">
+                                <svg class="absolute w-2.5 h-2.5 text-white left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
+                                    viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <span
+                                class="text-sm font-bold text-slate-500 group-hover:text-slate-700 transition-colors">Копировать
+                                без цен</span>
+                        </label>
+                    </div>
+
+                    <div
+                        class="p-3 bg-green-50 rounded-xl border border-green-100 flex flex-col justify-center items-end">
+                        <p class="text-sm text-green-600 font-semibold mb-0.5">Всего VP</p>
+                        <p class="text-xl font-bold text-green-700 leading-none">{{ formatNumber(totals.vp) }}</p>
+                    </div>
+                </div>
+
+                <div class="space-y-2 mb-6">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500">Клиент платит ({{ clientDiscount}}%):</span>
+                        <span class="font-bold text-slate-900">{{ formatCurrency(totals.price) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-500">Мой доход:</span>
+                        <span :class="['font-bold', totals.isLoss ? 'text-red-500' : 'text-green-600']">
+                            {{ totals.isLoss ? '' : '+' }} {{ formatCurrency(totals.profit) }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button @click="copyOrder"
+                        class="flex-1 bg-slate-900 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20 active:translate-y-0.5">
+                        {{ copyBtnText }}
+                    </button>
+                    <button @click="clearCart"
+                        :class="['px-4 py-3.5 rounded-xl border transition-all duration-200', isClearing ? 'bg-red-500 text-white border-red-500 shadow-md scale-105' : 'border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200']">
+                        <span v-if="isClearing" class="text-xs font-bold whitespace-nowrap">Удалить?</span>
+                        <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    searchQuery: '',
+                    myDiscount: 50, // Your buying discount
+                    clientDiscount: 100, // Client selling discount (default to Retail)
+                    myDiscounts: [50, 42, 35, 25],
+                    clientDiscounts: [50, 42, 35, 25, 15, 100],
+                    deliveryCost: 0,
+                    hasDelivery: false,
+                    simpleCopy: false,
+                    selectedCategory: 'all',
+                    cart: [],
+                    isClearing: false,
+                    copyBtnText: 'Копировать заказ',
+                    // Data parsed directly from your CSV file
+                    rawDb: [
+                        { cat: "Сбалансированное питание", sku: "2793", name: "Коктейль Формула 1", vp: 23.95, p50: 1853.79, p42: 2082.86, p35: 2283.29, p25: 2569.63, p15: 2855.96, p100: 3708 },
+                        { cat: "Сбалансированное питание", sku: "172K", name: "Протеин Дринк Микс", vp: 31.45, p50: 2639.00, p42: 2927.00, p35: 3180.00, p25: 3540.00, p15: 3900.00, p100: 4493.00 },
+                        { cat: "Сбалансированное питание", sku: "012K", name: "Протеиновый кофе - Латте Макиато", vp: 23.95, p50: 2132.56, p42: 2332.84, p35: 2508.08, p25: 2758.42, p15: 3008.76, p100: 4265 },
+                        { cat: "Сбалансированное питание", sku: "005K", name: "Коктейль Формула 1 - Дыня 2 кг", vp: 99.6, p50: 6849.69, p42: 7696.37, p35: 8437.22, p25: 9495.57, p15: 10553.92, p100: 13699 },
+                        { cat: "Сбалансированное питание", sku: "1636", name: "Вечерний коктейль", vp: 20.15, p50: 1557.94, p42: 1750.41, p35: 1918.82, p25: 2159.4, p15: 2399.98, p100: 3116 },
+                        { cat: "Сбалансированное питание", sku: "528K", name: "Протеиновая смесь для выпечки", vp: 20, p50: 1718.37, p42: 1877.95, p35: 2017.58, p25: 2217.05, p15: 2416.52, p100: 3437 },
+                        { cat: "Сбалансированное питание", sku: "0242", name: "Формула 3 (Белок)", vp: 17.95, p50: 1580.51, p42: 1775.81, p35: 1946.69, p25: 2190.82, p15: 2434.94, p100: 3161 },
+                        { cat: "Сбалансированное питание", sku: "182K", name: "Травяной напиток", vp: 19.95, p50: 1344.44, p42: 1510.56, p35: 1655.91, p25: 1863.55, p15: 2071.19, p100: 2689 },
+                        { cat: "Сбалансированное питание", sku: "179K", name: "Травяной напиток Классический 102г", vp: 34.95, p50: 2508.93, p42: 2819.01, p35: 3090.32, p25: 3477.92, p15: 3865.51, p100: 5018 },
+                        { cat: "Сбалансированное питание", sku: "1189", name: "Растительный напиток Алоэ", vp: 24.95, p50: 1681.16, p42: 1888.85, p35: 2070.58, p25: 2330.2, p15: 2589.82, p100: 3362 },
+                        { cat: "Сбалансированное питание", sku: "2864", name: "Овсяно-яблочный напиток", vp: 22.95, p50: 1620.77, p42: 1821.14, p35: 1996.47, p25: 2246.94, p15: 2497.4, p100: 3242 },
+                        { cat: "Сбалансированное питание", sku: "2865", name: "Комплекс пищевых волокон", vp: 22.95, p50: 1620.77, p42: 1821.14, p35: 1996.47, p25: 2246.94, p15: 2497.4, p100: 3242 },
+                        { cat: "Сбалансированное питание", sku: "0260", name: "Протеиновый батончик (14 шт)", vp: 7.7, p50: 1359.08, p42: 1424.28, p35: 1481.32, p25: 1562.82, p15: 1644.32, p100: 2718 },
+                        { cat: "Сбалансированное питание", sku: "001K", name: "Протеиновые мини-батончики (28 шт)", vp: 9.24, p50: 1629.92, p42: 1708.2, p35: 1776.69, p25: 1874.53, p15: 1972.37, p100: 3260 },
+                        { cat: "Сбалансированное питание", sku: "4472", name: "Батончик Формула 1 Экспресс (7 шт)", vp: 14, p50: 1063.23, p42: 1194.5, p35: 1309.37, p25: 1473.46, p15: 1637.55, p100: 2126 },
+                        { cat: "Сбалансированное питание", sku: "141K", name: "Протеиновые Чипсы (10 шт)", vp: 11.75, p50: 1373.11, p42: 1499.5, p35: 1610.1, p25: 1768.09, p15: 1926.08, p100: 2746 },
+                        { cat: "Сбалансированное питание", sku: "0265", name: "Фильтр для воды", vp: 20, p50: 2043.5, p42: 2159.25, p35: 2260.54, p25: 2405.23, p15: 2549.92, p100: 4087 },
+                        { cat: "Сбалансированное питание", sku: "0266", name: "Картридж к фильтру", vp: 5.35, p50: 597.8, p42: 621.81, p35: 642.82, p25: 672.83, p15: 702.84, p100: 1196 },
+
+                        { cat: "Контроль веса", sku: "0050", name: "Термо Комплит", vp: 30.95, p50: 2188.07, p42: 2458.52, p35: 2695.16, p25: 3033.23, p15: 3371.29, p100: 4376 },
+                        { cat: "Контроль веса", sku: "236K", name: "Фито Комплит", vp: 29.5, p50: 2403.4, p42: 2686.05, p35: 2933.37, p25: 3286.68, p15: 3639.99, p100: 4807 },
+                        { cat: "Контроль веса", sku: "3123", name: "Клеточный Активатор", vp: 21.95, p50: 1564.04, p42: 1757.29, p35: 1926.38, p25: 2167.94, p15: 2409.5, p100: 3128 },
+                        { cat: "Контроль веса", sku: "0117", name: "Желтые таблетки Термоджетикс", vp: 20.5, p50: 1293.2, p42: 1453.07, p35: 1592.95, p25: 1792.79, p15: 1992.63, p100: 2586 },
+                        { cat: "Контроль веса", sku: "0111", name: "Cell-u-loss", vp: 15.75, p50: 1320.04, p42: 1483.23, p35: 1626.02, p25: 1830, p15: 2033.98, p100: 2640 },
+
+                        { cat: "Целевое питание", sku: "0036", name: "Найтворкс", vp: 75, p50: 4768.37, p42: 5329.67, p35: 5820.8, p25: 6522.43, p15: 7224.05, p100: 9537 },
+                        { cat: "Целевое питание", sku: "1437", name: "H24 Восстановление силы", vp: 43, p50: 2589.45, p42: 2846.63, p35: 3071.66, p25: 3393.13, p15: 3714.6, p100: 5179 },
+                        { cat: "Целевое питание", sku: "110K", name: "Грин Макс Селект", vp: 38.91, p50: 3397.09, p42: 3707.17, p35: 3978.48, p25: 4366.08, p15: 4753.67, p100: 6794 },
+                        { cat: "Целевое питание", sku: "076K", name: "Коллаген Бьюти Комплекс", vp: 37.1, p50: 3154.31, p42: 3544.22, p35: 3885.4, p25: 4372.79, p15: 4860.18, p100: 6309 },
+                        { cat: "Целевое питание", sku: "173K", name: "Микробиотик Макс", vp: 27.1, p50: 2705.35, p42: 3039.63, p35: 3332.13, p25: 3749.98, p15: 4167.83, p100: 5411 },
+                        { cat: "Целевое питание", sku: "0043", name: "Гербалайфлайн Макс", vp: 19.4, p50: 1500.6, p42: 1686.24, p35: 1848.67, p25: 2080.71, p15: 2312.75, p100: 3001 },
+                        { cat: "Целевое питание", sku: "3151", name: "Лифтофф Апельсин", vp: 15.95, p50: 1262.09, p42: 1417.96, p35: 1554.34, p25: 1749.18, p15: 1944.01, p100: 2524 },
+                        { cat: "Целевое питание", sku: "0022", name: "Шизандра Эдванс", vp: 15.5, p50: 1112.03, p42: 1249.35, p35: 1369.51, p25: 1541.17, p15: 1712.82, p100: 2224 },
+                        { cat: "Целевое питание", sku: "0102", name: "Чай N-R-G", vp: 14.75, p50: 982.1, p42: 1103.51, p35: 1209.75, p25: 1361.52, p15: 1513.29, p100: 1964 },
+                        { cat: "Целевое питание", sku: "2038", name: "Формула 2 - Комплекс витаминов и минералов", vp: 13.55, p50: 1361.52, p42: 1529.78, p35: 1677.01, p25: 1887.34, p15: 2097.67, p100: 2723 },
+                        { cat: "Целевое питание", sku: "1466", name: "CR7 DRIVE", vp: 12.5, p50: 1218.17, p42: 1343.98, p35: 1454.06, p25: 1611.32, p15: 1768.57, p100: 2436 },
+                        { cat: "Целевое питание", sku: "0020", name: "ЭкстраКаль Эдванс", vp: 10.25, p50: 727.73, p42: 817.62, p35: 896.27, p25: 1008.64, p15: 1121, p100: 1455 },
+                        { cat: "Целевое питание", sku: "2273", name: "Иммьюн Бустер", vp: 9.5, p50: 733.83, p42: 824.5, p35: 903.84, p25: 1017.18, p15: 1130.51, p100: 1468 },
+
+                        { cat: "Promote", sku: "371A", name: "Бутылка 2000 мл.", vp: 2.4, p50: 1787.3, p42: 1787.3, p35: 1787.3, p25: 1787.3, p15: 1787.3, p100: 1787.3 },
+                        { cat: "Promote", sku: "180A", name: "Бутылка 900 мл.", vp: 2.2, p50: 1465.22, p42: 1465.22, p35: 1465.22, p25: 1465.22, p15: 1465.22, p100: 1465.22 },
+                        { cat: "Promote", sku: "101M", name: "Шейкер набор (5 шт)", vp: 1.65, p50: 895.48, p42: 895.48, p35: 895.48, p25: 895.48, p15: 895.48, p100: 895.48 },
+                        { cat: "Promote", sku: "8697", name: "Супер шейкер", vp: 1.65, p50: 690.52, p42: 690.52, p35: 690.52, p25: 690.52, p15: 690.52, p100: 690.52 },
+                        { cat: "Promote", sku: "297A", name: "Мерная ложка белая (10 шт.)", vp: 1.2, p50: 650.26, p42: 650.26, p35: 650.26, p25: 650.26, p15: 650.26, p100: 650.26 },
+                        { cat: "Promote", sku: "302A", name: "Контейнер (10 шт.)", vp: 0.9, p50: 486.78, p42: 486.78, p35: 486.78, p25: 486.78, p15: 486.78, p100: 486.78 },
+                        { cat: "Promote", sku: "8711", name: "Спортивная бутылка 500 мл.", vp: 0.75, p50: 435.54, p42: 435.54, p35: 435.54, p25: 435.54, p15: 435.54, p100: 435.54 },
+                        { cat: "Promote", sku: "719A", name: "Мерная ложка белая", vp: 0.16, p50: 79.3, p42: 79.3, p35: 79.3, p25: 79.3, p15: 79.3, p100: 79.3 },
+                        { cat: "Promote", sku: "1B42", name: "Эко-ложка (Бета/H24)", vp: 0.1, p50: 81.74, p42: 81.74, p35: 81.74, p25: 81.74, p15: 81.74, p100: 81.74 },
+                        { cat: "Promote", sku: "2B08", name: "Эко-ложка (Коллаген)", vp: 0.1, p50: 81.74, p42: 81.74, p35: 81.74, p25: 81.74, p15: 81.74, p100: 81.74 },
+                        { cat: "Литература", sku: "020N", name: "Бумажный пакет Herbalife мал", vp: 0.0001, p50: 12.2, p42: 12.2, p35: 12.2, p25: 12.2, p15: 12.2, p100: 12.2 },
+                    ]
+                }
+            },
+            mounted() {
+                // Load settings
+                const savedMyDiscount = localStorage.getItem('hl_my_discount');
+                if (savedMyDiscount) this.myDiscount = Number(savedMyDiscount);
+
+                const savedClientDiscount = localStorage.getItem('hl_client_discount');
+                if (savedClientDiscount) this.clientDiscount = Number(savedClientDiscount);
+
+                const savedCategory = localStorage.getItem('hl_category');
+                if (savedCategory) this.selectedCategory = savedCategory;
+
+                const savedHasDelivery = localStorage.getItem('hl_has_delivery');
+                if (savedHasDelivery) this.hasDelivery = savedHasDelivery === 'true';
+
+                const savedDeliveryCost = localStorage.getItem('hl_delivery_cost');
+                if (savedDeliveryCost) this.deliveryCost = Number(savedDeliveryCost);
+
+                const savedSimpleCopy = localStorage.getItem('hl_simple_copy');
+                if (savedSimpleCopy) this.simpleCopy = savedSimpleCopy === 'true';
+
+                // Load cart
+                try {
+                    const savedCart = JSON.parse(localStorage.getItem('hl_cart') || '[]');
+                    this.cart = savedCart.map(item => {
+                        const product = this.rawDb.find(p => p.sku === item.sku);
+                        if (product) {
+                            return { product: product, qty: item.qty };
+                        }
+                        return null;
+                    }).filter(i => i !== null);
+                } catch (e) {
+                    console.error('Failed to load cart', e);
+                    this.cart = [];
+                }
+            },
+            watch: {
+                myDiscount(val) {
+                    localStorage.setItem('hl_my_discount', val);
+                },
+                clientDiscount(val) {
+                    localStorage.setItem('hl_client_discount', val);
+                },
+                selectedCategory(val) {
+                    localStorage.setItem('hl_category', val);
+                },
+                hasDelivery(val) {
+                    localStorage.setItem('hl_has_delivery', val);
+                },
+                deliveryCost(val) {
+                    localStorage.setItem('hl_delivery_cost', val);
+                },
+                simpleCopy(val) {
+                    localStorage.setItem('hl_simple_copy', val);
+                },
+                cart: {
+                    deep: true,
+                    handler(val) {
+                        const toSave = val.map(item => ({ sku: item.product.sku, qty: item.qty }));
+                        localStorage.setItem('hl_cart', JSON.stringify(toSave));
+                    }
+                }
+            },
+            computed: {
+                categories() {
+                    const cats = new Set(this.rawDb.map(p => p.cat));
+                    return Array.from(cats);
+                },
+                filteredProducts() {
+                    let prods = this.rawDb;
+                    if (this.selectedCategory !== 'all') {
+                        prods = prods.filter(p => p.cat === this.selectedCategory);
+                    }
+                    if (this.searchQuery) {
+                        const q = this.searchQuery.toLowerCase();
+                        prods = prods.filter(p =>
+                            p.name.toLowerCase().includes(q) ||
+                            p.sku.toLowerCase().includes(q)
+                        );
+                    }
+                    return prods;
+                },
+                groupedProducts() {
+                    const groups = {};
+                    this.filteredProducts.forEach(p => {
+                        if (!groups[p.cat]) groups[p.cat] = [];
+                        groups[p.cat].push(p);
+                    });
+                    return groups;
+                },
+                cartItemCount() {
+                    return this.cart.reduce((sum, item) => sum + item.qty, 0);
+                },
+                totals() {
+                    let totalVP = 0;
+                    let totalPrice = 0;
+                    let totalCost = 0;
+                    let totalRetail = 0;
+
+                    this.cart.forEach(item => {
+                        totalVP += item.product.vp * item.qty;
+                        totalPrice += this.getPrice(item.product, this.clientDiscount) * item.qty;
+                        totalCost += this.getPrice(item.product, this.myDiscount) * item.qty;
+                        totalRetail += this.getPrice(item.product, 100) * item.qty;
+                    });
+
+                    const delivery = this.hasDelivery ? (Number(this.deliveryCost) || 0) : 0;
+                    // Delivery is added to what client pays, but I still pay it out, so it doesn't affect profit margin from products
+                    const finalClientPrice = totalPrice + delivery;
+
+                    return {
+                        vp: totalVP.toFixed(2),
+                        price: finalClientPrice.toFixed(2),
+                        retail: totalRetail.toFixed(2),
+                        profit: (totalPrice - totalCost).toFixed(2), // Profit ignores delivery (pass-through)
+                        isLoss: totalPrice < totalCost,
+                        delivery: delivery
+                    }
+                }
+            },
+            methods: {
+                getCardClass(product) {
+                    if (this.selectedCategory !== 'all') {
+                        return 'bg-white border-slate-100';
+                    }
+                    const map = {
+                        "Сбалансированное питание": "bg-green-50/60 border-green-100",
+                        "Контроль веса": "bg-orange-50/60 border-orange-100",
+                        "Целевое питание": "bg-blue-50/60 border-blue-100",
+                        "Promote": "bg-purple-50/60 border-purple-100",
+                        "Литература": "bg-slate-100/60 border-slate-200"
+                    };
+                    return map[product.cat] || "bg-white border-slate-100";
+                },
+                getPrice(product, discount) {
+                    // Map the discount number to the property key
+                    const map = {
+                        50: 'p50', 42: 'p42', 35: 'p35', 25: 'p25', 15: 'p15', 100: 'p100'
+                    };
+                    return product[map[discount]];
+                },
+                addToCart(product) {
+                    const existing = this.cart.find(i => i.product.sku === product.sku);
+                    if (existing) {
+                        existing.qty++;
+                    } else {
+                        this.cart.push({ product: product, qty: 1 });
+                        // Scroll to bottom when new item is added
+                        this.$nextTick(() => {
+                            this.scrollToBottom();
+                        });
+                    }
+                },
+                scrollToBottom() {
+                    const container = this.$refs.cartContainer;
+                    if (container) {
+                        container.scrollTop = container.scrollHeight;
+                    }
+                },
+                updateQuantity(item, delta) {
+                    item.qty += delta;
+                    if (item.qty <= 0) {
+                        this.cart = this.cart.filter(i => i.product.sku !== item.product.sku);
+                    }
+                },
+                validateQuantity(item) {
+                    if (typeof item.qty !== 'number' || item.qty < 1) {
+                        item.qty = 1;
+                    }
+                    // Force integer
+                    item.qty = Math.floor(item.qty);
+                },
+                clearCart() {
+                    if (this.isClearing) {
+                        this.cart = [];
+                        this.isClearing = false;
+                    } else {
+                        this.isClearing = true;
+                        setTimeout(() => this.isClearing = false, 3000);
+                    }
+                },
+                formatCurrency(val) {
+                    return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(val);
+                },
+                formatNumber(val) {
+                    return new Intl.NumberFormat('ru-RU').format(val);
+                },
+                async copyOrder() {
+                    if (this.cart.length === 0) return;
+
+                    let text = "";
+                    if (!this.simpleCopy) {
+                        text += `Заказ (Скидка: ${this.clientDiscount}%)\n\n`;
+                    }
+
+                    this.cart.forEach(item => {
+                        if (this.simpleCopy) {
+                            text += `${item.product.name} x${item.qty}\n`;
+                        } else {
+                            const price = this.getPrice(item.product, this.clientDiscount);
+                            text += `${item.product.name} x${item.qty} = ${this.formatNumber(price * item.qty)}\n`;
+                        }
+                    });
+
+                    text += `\n----------------\n`;
+                    text += `Итого VP: ${this.totals.vp}\n`;
+
+                    if (this.totals.delivery > 0) {
+                        text += `Доставка: ${this.formatCurrency(this.totals.delivery)}\n`;
+                    }
+
+                    text += `К оплате: ${this.formatCurrency(this.totals.price)}\n`;
+
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        this.copyBtnText = 'Скопировано!';
+                        setTimeout(() => this.copyBtnText = 'Копировать заказ', 2000);
+                    } catch (err) {
+                        alert('Не удалось скопировать текст');
+                    }
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+
+</html>
