@@ -108,7 +108,7 @@
 
                     <!-- Client Discount (Selling Price) -->
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-bold text-slate-400">продаю под</span>
+                        <span class="text-sm font-bold text-slate-400 text-right leading-tight">заказ под</span>
                         <div class="flex bg-slate-100 p-1 rounded-lg">
                             <button v-for="disc in clientDiscounts" :key="'client'+disc" @click="clientDiscount = disc"
                                 :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', clientDiscount === disc ? 'bg-white shadow text-green-600' : 'text-slate-500 hover:text-slate-700']">
