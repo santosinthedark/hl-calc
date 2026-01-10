@@ -221,7 +221,10 @@
                         </path>
                     </svg>
                     <p class="text-sm font-medium">Корзина пуста</p>
-                    <p class="text-xs mt-1 text-slate-400">Выберите товары из списка слева</p>
+                    <p class="text-xs mt-1 text-slate-400">
+                        <span class="lg:hidden">Выберите товары из списка</span>
+                        <span class="hidden lg:inline">Выберите товары из списка слева</span>
+                    </p>
                 </div>
 
                 <div v-for="item in cart" :key="item.product.sku"
