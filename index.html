@@ -63,7 +63,7 @@
 
 <body>
 
-    <div id="app" class="h-[100dvh] flex flex-col lg:flex-row overflow-hidden text-slate-800">
+    <div id="app" class="h-screen flex flex-col lg:flex-row overflow-hidden text-slate-800">
 
         <div class="flex-1 flex flex-col h-full relative z-10">
             <header
@@ -97,7 +97,7 @@
                 <div class="flex flex-col gap-2 items-end">
                     <!-- My Discount (Purchase Price) -->
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-bold text-slate-400 hidden sm:inline">моя скидка</span>
+                        <span class="text-sm font-bold text-slate-400">моя скидка</span>
                         <div class="flex bg-slate-100 p-1 rounded-lg">
                             <button v-for="disc in myDiscounts" :key="'my'+disc" @click="myDiscount = disc"
                                 :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', myDiscount === disc ? 'bg-white shadow text-slate-900' : 'text-slate-400 hover:text-slate-600']">
@@ -108,7 +108,7 @@
 
                     <!-- Client Discount (Selling Price) -->
                     <div class="flex items-center gap-2">
-                        <span class="text-sm font-bold text-slate-400 hidden sm:inline">продаю под</span>
+                        <span class="text-sm font-bold text-slate-400">продаю под</span>
                         <div class="flex bg-slate-100 p-1 rounded-lg">
                             <button v-for="disc in clientDiscounts" :key="'client'+disc" @click="clientDiscount = disc"
                                 :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', clientDiscount === disc ? 'bg-white shadow text-green-600' : 'text-slate-500 hover:text-slate-700']">
@@ -185,10 +185,30 @@
             </div>
         </div>
 
-        <div class="w-full lg:w-[400px] bg-white border-l border-slate-200 flex flex-col shadow-2xl z-30">
-            <div class="p-6 bg-slate-900 text-white flex justify-between items-center">
+        <!-- Mobile Cart Backdrop -->
+        <div v-if="isCartOpen" @click="isCartOpen = false"
+            class="fixed inset-0 bg-slate-900/60 z-50 lg:hidden backdrop-blur-sm transition-opacity"></div>
+
+        <!-- Cart Sidebar / Bottom Sheet -->
+        <div
+            :class="['fixed bottom-0 left-0 w-full h-[85vh] lg:h-auto lg:static lg:w-[400px] bg-white lg:border-l border-slate-200 flex flex-col shadow-2xl z-[60] lg:z-30 rounded-t-2xl lg:rounded-none transition-transform duration-300 ease-out', isCartOpen ? 'translate-y-0' : 'translate-y-[110%] lg:translate-y-0']">
+
+            <!-- Mobile Handle -->
+            <div class="w-full flex justify-center pt-3 pb-1 lg:hidden" @click="isCartOpen = false">
+                <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+            </div>
+
+            <div class="p-6 bg-slate-900 text-white flex justify-between items-center lg:rounded-none rounded-t-xl">
                 <h2 class="font-bold text-lg">Ваш заказ</h2>
-                <span class="bg-white/20 px-2 py-0.5 rounded text-sm">{{ cartItemCount }} поз.</span>
+                <div class="flex items-center gap-3">
+                    <span class="bg-white/20 px-2 py-0.5 rounded text-sm">{{ cartItemCount }} поз.</span>
+                    <button @click="isCartOpen = false" class="lg:hidden text-slate-400 hover:text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <div class="flex-1 overflow-y-auto p-4 space-y-3" ref="cartContainer">
@@ -221,7 +241,7 @@
                 </div>
             </div>
 
-            <div class="bg-white border-t border-slate-200 p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+            <div class="bg-white border-t border-slate-200 p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe">
                 <div class="grid grid-cols-[1.5fr_1fr] gap-4 mb-6">
                     <div
                         class="flex flex-col justify-center gap-2.5 px-3 py-2 bg-slate-50/50 rounded-xl border border-slate-100/50">
@@ -300,6 +320,23 @@
             </div>
         </div>
 
+        <!-- Mobile Bottom Summary Bar -->
+        <div
+            class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 lg:hidden flex items-center justify-between gap-4 pb-safe">
+            <div class="flex flex-col">
+                <span class="text-xs text-slate-500 font-medium">{{ cartItemCount }} поз. на {{ totals.vp }} VP</span>
+                <span class="text-lg font-bold text-slate-900">{{ formatCurrency(totals.price) }}</span>
+            </div>
+            <button @click="isCartOpen = true"
+                class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-slate-900/20 active:scale-95 transition-transform flex items-center gap-2">
+                <span>Ваш заказ</span>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
     </div>
 
     <script>
@@ -316,6 +353,7 @@
                     deliveryCost: 0,
                     hasDelivery: false,
                     simpleCopy: false,
+                    isCartOpen: false,
                     selectedCategory: 'all',
                     cart: [],
                     isClearing: false,
@@ -428,6 +466,13 @@
                 },
                 simpleCopy(val) {
                     localStorage.setItem('hl_simple_copy', val);
+                },
+                isCartOpen(val) {
+                    if (val) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = '';
+                    }
                 },
                 cart: {
                     deep: true,
