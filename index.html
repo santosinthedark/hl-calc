@@ -159,12 +159,14 @@
                                 </div>
 
                                 <span
-                                    class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">{{
+                                    class="hidden sm:block text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">{{
                                     product.vp }} VP</span>
 
-                                <div class="text-right shrink-0 min-w-[80px]">
+                                <div class="text-right shrink-0 min-w-[60px] sm:min-w-[80px]">
                                     <p class="text-sm font-bold text-slate-900 leading-none">{{
                                         formatCurrency(getPrice(product, clientDiscount)) }}</p>
+                                    <p class="text-[10px] font-bold text-green-600 sm:hidden mt-0.5">{{ product.vp }} VP
+                                    </p>
                                 </div>
 
                                 <button @click="addToCart(product)"
