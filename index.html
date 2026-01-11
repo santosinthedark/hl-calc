@@ -153,6 +153,22 @@
                 box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2), 0 4px 6px -4px rgba(239, 68, 68, 0.1);
             }
         }
+
+        /* Force Active States (Touch Feedback) */
+        .btn-minus:active {
+            color: #ef4444 !important;
+            background-color: #e2e8f0;
+        }
+
+        .btn-plus:active {
+            color: #16a34a !important;
+            background-color: #e2e8f0;
+        }
+
+        /* Remove default tap highlight on mobile to let custom colors show */
+        button {
+            -webkit-tap-highlight-color: transparent;
+        }
     </style>
 </head>
 
