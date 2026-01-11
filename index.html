@@ -16,6 +16,10 @@
             background-color: #f3f4f6;
         }
 
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
         .glass-panel {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -38,6 +42,7 @@
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
+            height: 6px;
         }
 
         ::-webkit-scrollbar-track {
@@ -45,8 +50,16 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
+            background-color: #cbd5e1;
+            /* slate-300 */
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
+            /* slate-400 */
         }
 
         .fade-enter-active,
@@ -68,7 +81,7 @@
         <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden"
             ref="mainScrollContainer">
             <header ref="mainHeader"
-                class="bg-white px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm z-20">
+                class="bg-white/90 backdrop-blur-md px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm z-20">
                 <div class="flex items-center gap-3">
                     <div
                         class="w-10 h-10 hl-bg-green rounded-full flex items-center justify-center text-white shadow-lg shadow-green-600/20">
@@ -99,9 +112,9 @@
                     <!-- My Discount (Purchase Price) -->
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-bold text-slate-400">моя скидка</span>
-                        <div class="flex bg-slate-100 p-1 rounded-lg">
+                        <div class="inline-flex bg-slate-100 p-1 rounded-xl">
                             <button v-for="disc in myDiscounts" :key="'my'+disc" @click="myDiscount = disc"
-                                :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', myDiscount === disc ? 'bg-white shadow text-slate-900' : 'text-slate-400 hover:text-slate-600']">
+                                :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-100 active:scale-90', myDiscount === disc ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700']">
                                 {{ disc === 100 ? '100%' : disc + '%' }}
                             </button>
                         </div>
@@ -110,9 +123,9 @@
                     <!-- Client Discount (Selling Price) -->
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-bold text-slate-400 text-right leading-tight">заказ под</span>
-                        <div class="flex bg-slate-100 p-1 rounded-lg">
+                        <div class="inline-flex bg-slate-100 p-1 rounded-xl">
                             <button v-for="disc in clientDiscounts" :key="'client'+disc" @click="clientDiscount = disc"
-                                :class="['px-3 py-1.5 text-xs font-bold rounded-md transition-all', clientDiscount === disc ? 'bg-white shadow text-green-600' : 'text-slate-500 hover:text-slate-700']">
+                                :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-100 active:scale-90', clientDiscount === disc ? 'bg-white shadow-sm text-green-600' : 'text-slate-500 hover:text-slate-700']">
                                 {{ disc === 100 ? '100%' : disc + '%' }}
                             </button>
                         </div>
@@ -120,48 +133,53 @@
                 </div>
             </header>
 
-            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 sticky top-0 z-30 lg:static" ref="searchBar">
-                <div class="relative">
-                    <input v-model="searchQuery" @focus="fixSearchScroll" @input="fixSearchScroll"
-                        @click="fixSearchScroll" type="text" placeholder="Поиск продукта (название или SKU)..."
-                        ref="searchInput"
-                        class="w-full pl-10 pr-10 py-3 rounded-xl border-0 ring-1 ring-slate-200 focus:ring-2 focus:ring-green-500 shadow-sm transition-all bg-white outline-none">
-                    <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3.5" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <!-- Clear Button -->
-                    <button v-if="searchQuery" @click="searchQuery = ''; $refs.searchInput.focus()"
-                        class="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-full hover:bg-slate-100 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
 
-                <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
-                    <button @click="selectedCategory = 'all'"
-                        :class="['whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold border transition-colors', selectedCategory === 'all' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300']">Все</button>
-                    <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat"
-                        :class="['whitespace-nowrap px-3 py-1 rounded-full text-xs font-semibold border transition-colors', selectedCategory === cat ? 'bg-green-600 text-white border-green-600' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300']">
-                        {{ cat }}
-                    </button>
-                </div>
-            </div>
 
             <div class="flex-1 bg-slate-50 pb-24 lg:pb-0 lg:overflow-y-auto overflow-visible"
                 :class="{'min-h-[150vh]': searchQuery.length > 0}">
+
+                <!-- Search Bar (Moved Inside for Desktop Sticky Layering) -->
+                <div class="px-6 py-4 bg-slate-50/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30"
+                    ref="searchBar">
+                    <div class="relative">
+                        <input v-model="searchQuery" @focus="fixSearchScroll" @input="fixSearchScroll"
+                            @click="fixSearchScroll" type="text" placeholder="Поиск продукта (название или SKU)..."
+                            ref="searchInput"
+                            class="peer w-full pl-10 pr-10 py-3 rounded-xl border-0 ring-1 ring-slate-200 focus:ring-2 focus:ring-green-500/50 focus:border-green-500 focus:shadow-[0_0_15px_rgba(120,190,32,0.3)] transition-all duration-300 ease-out bg-white outline-none">
+                        <svg class="w-5 h-5 text-slate-400 absolute left-3 top-3.5 transition-all duration-300 peer-focus:text-green-600 peer-focus:scale-110"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <!-- Clear Button -->
+                        <button v-if="searchQuery" @click="searchQuery = ''; $refs.searchInput.focus()"
+                            class="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600 p-0.5 rounded-full hover:bg-slate-100 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
+                        <button @click="selectedCategory = 'all'"
+                            :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === 'all' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">Все</button>
+                        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat"
+                            :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === cat ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">
+                            {{ cat }}
+                        </button>
+                    </div>
+                </div>
+
                 <div v-for="cat in categories" :key="cat">
                     <div v-if="groupedProducts[cat]" class="mb-2">
-                        <h3 v-if="selectedCategory === 'all'"
-                            class="lg:sticky static lg:top-0 z-10 bg-slate-50/95 backdrop-blur px-6 py-3 text-lg font-bold text-slate-800 shadow-sm border-b border-slate-100/50">
+                        <h3 v-if="selectedCategory === 'all'" :style="{ top: searchBarHeight + 'px' }"
+                            class="sticky z-10 bg-slate-50/80 backdrop-blur-md px-6 py-3 text-lg font-bold text-slate-800 shadow-sm border-b border-slate-100/50">
                             {{ cat }}</h3>
 
                         <div class="flex flex-col gap-2 px-6 pt-2">
                             <div v-for="product in groupedProducts[cat]" :key="product.sku"
-                                :class="['flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:shadow-md transition-all group relative overflow-hidden', getCardClass(product)]">
+                                :class="['flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] hover:border-green-500/40 hover:-translate-y-1 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden', getCardClass(product)]">
 
                                 <span class="text-[10px] font-mono text-slate-400 w-8 shrink-0">{{ product.sku }}</span>
 
@@ -182,7 +200,7 @@
                                 </div>
 
                                 <button @click="addToCart(product)"
-                                    class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-green-600 transition-colors shadow-md active:scale-95 shrink-0">
+                                    class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-green-600 transition-all duration-100 shadow-md active:scale-75 shrink-0 group-hover:scale-110">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4v16m8-8H4"></path>
@@ -201,18 +219,18 @@
 
         <!-- Mobile Cart Backdrop -->
         <div v-if="isCartOpen" @click="isCartOpen = false"
-            class="fixed inset-0 bg-slate-900/60 z-50 lg:hidden backdrop-blur-sm transition-opacity"></div>
+            class="fixed inset-0 bg-slate-900/40 z-50 lg:hidden backdrop-blur-md transition-opacity"></div>
 
         <!-- Cart Sidebar / Bottom Sheet -->
         <div
-            :class="['fixed bottom-0 left-0 w-full h-[85vh] lg:h-auto lg:static lg:w-[400px] bg-white lg:border-l border-slate-200 flex flex-col shadow-2xl z-[60] lg:z-30 rounded-t-2xl lg:rounded-none transition-transform duration-300 ease-out', isCartOpen ? 'translate-y-0' : 'translate-y-[110%] lg:translate-y-0']">
+            :class="['fixed bottom-0 left-0 w-full h-[85vh] lg:h-auto lg:static lg:w-[400px] bg-white lg:border-l border-slate-200 flex flex-col shadow-2xl z-[60] lg:z-30 rounded-t-[30px] lg:rounded-none transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]', isCartOpen ? 'translate-y-0' : 'translate-y-[110%] lg:translate-y-0']">
 
             <!-- Mobile Handle -->
             <div class="w-full flex justify-center pt-3 pb-1 lg:hidden" @click="isCartOpen = false">
                 <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
             </div>
 
-            <div class="p-6 bg-slate-900 text-white flex justify-between items-center lg:rounded-none rounded-t-xl">
+            <div class="p-6 bg-slate-900 text-white flex justify-between items-center lg:rounded-none rounded-t-[30px]">
                 <h2 class="font-bold text-lg">Ваш заказ</h2>
                 <div class="flex items-center gap-3">
                     <span class="bg-white/20 px-2 py-0.5 rounded text-sm">{{ cartItemCount }} поз.</span>
@@ -482,6 +500,9 @@
                     console.error('Failed to load cart', e);
                     this.cart = [];
                 }
+                // Initialize sticky header dynamic height
+                this.updateSearchBarHeight();
+                window.addEventListener('resize', this.updateSearchBarHeight);
             },
             watch: {
                 myDiscount(val) {
@@ -679,7 +700,7 @@
 
                     const text = lines.join('\n');
                     navigator.clipboard.writeText(text).then(() => {
-                        this.copyBtnText = 'Скопировано!';
+                        this.copyBtnText = 'Скопировано';
                         setTimeout(() => this.copyBtnText = 'Копировать заказ', 2000);
                     }).catch(err => {
                         alert('Не удалось скопировать текст');
@@ -689,12 +710,20 @@
                     // Mobile optimization: When search is focused, ensure it stays sticky at top
                     // preventing the header from scrolling back down
                     if (window.innerWidth < 1024) {
-                        setTimeout(() => {
-                            // Scroll past the header so Search Bar is at top
+                        this.updateSearchBarHeight();
+
+                        this.$nextTick(() => {
                             if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
+                                // Force scroll to exactly below the Main Header
+                                // This brings the Search Bar (sticky) and Results (static) into view
                                 this.$refs.mainScrollContainer.scrollTop = this.$refs.mainHeader.offsetHeight;
                             }
-                        }, 100);
+                        });
+                    }
+                },
+                updateSearchBarHeight() {
+                    if (this.$refs.searchBar) {
+                        this.searchBarHeight = this.$refs.searchBar.offsetHeight;
                     }
                 },
                 copyRawNumber(val) {
@@ -705,7 +734,7 @@
                     navigator.clipboard.writeText(raw).then(() => {
                         // Optional: Visual feedback (toast)
                         const originalText = this.copyBtnText;
-                        this.copyBtnText = 'Скопировано число!';
+                        this.copyBtnText = 'Цифры скопированы';
                         setTimeout(() => this.copyBtnText = 'Копировать заказ', 1000);
                     }).catch(err => {
                         console.error('Failed to copy', err);
