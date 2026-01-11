@@ -121,6 +121,38 @@
             background-size: 200% 100%;
             animation: subtle-shine 4s infinite linear;
         }
+
+        /* Mobile Hover Fixes */
+        @media (hover: hover) {
+            .btn-minus:hover {
+                color: #ef4444;
+            }
+
+            .btn-plus:hover {
+                color: #16a34a;
+            }
+
+            .btn-copy:not(.is-copied):hover {
+                transform: scale(1.03) translateY(-2px);
+                box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.4);
+            }
+
+            .btn-delete:not(.is-clearing):hover {
+                color: #ef4444;
+                border-color: #ef4444;
+                box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2);
+                /* shadow-red-500/20 */
+                transform: scale(1.05) translateY(-2px);
+            }
+
+            /* Add generic shadow-lg on hover for delete if needed, but the above shadow covers it */
+            .btn-delete:not(.is-clearing):hover {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                /* shadow-lg base */
+                /* Combine red shadow */
+                box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2), 0 4px 6px -4px rgba(239, 68, 68, 0.1);
+            }
+        }
     </style>
 </head>
 
@@ -339,11 +371,11 @@
 
                         <div class="flex items-center bg-slate-100 rounded-full h-9">
                             <button @click="updateQuantity(item, -1)"
-                                class="w-8 h-full flex items-center justify-center text-slate-500 hover:text-red-500 font-bold active:bg-slate-200 rounded-l-full transition-colors">−</button>
+                                class="w-8 h-full flex items-center justify-center text-slate-500 font-bold active:bg-slate-200 rounded-l-full transition-colors btn-minus">−</button>
                             <input type="number" v-model.number="item.qty" @change="validateQuantity(item)"
                                 class="w-8 text-center font-bold text-sm bg-transparent border-none outline-none appearance-none p-0 focus:ring-0">
                             <button @click="updateQuantity(item, 1)"
-                                class="w-8 h-full flex items-center justify-center text-slate-500 hover:text-green-600 font-bold active:bg-slate-200 rounded-r-full transition-colors">+</button>
+                                class="w-8 h-full flex items-center justify-center text-slate-500 font-bold active:bg-slate-200 rounded-r-full transition-colors btn-plus">+</button>
                         </div>
                     </div>
                 </TransitionGroup>
@@ -427,11 +459,10 @@
                     </div>
                 </div>
                 <div class="flex gap-2">
-                    <button @click="copyOrder"
-                        :class="['relative overflow-hidden flex-1 h-[52px] rounded-xl text-base font-bold shadow-lg transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] active:scale-90 flex items-center justify-center gap-2',
+                    <button @click="copyOrder" :class="['relative overflow-hidden flex-1 h-[52px] rounded-xl text-base font-bold shadow-lg transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] active:scale-90 flex items-center justify-center gap-2 btn-copy',
                             orderCopied 
-                                ? 'bg-slate-900 border border-transparent text-green-400 shadow-green-500/20 scale-[1.02]' 
-                                : 'bg-slate-900 border border-transparent text-white shadow-slate-900/20 hover:shadow-slate-900/40 hover:scale-[1.03] hover:-translate-y-0.5']">
+                                ? 'bg-slate-900 border border-transparent text-green-400 shadow-green-500/20 scale-[1.02] is-copied' 
+                                : 'bg-slate-900 border border-transparent text-white shadow-slate-900/20']">
 
                         <div v-if="!orderCopied" class="absolute inset-0 shine-effect pointer-events-none opacity-20">
                         </div>
@@ -446,10 +477,10 @@
 
                     </button>
                     <button @click="clearCart"
-                        :class="['relative overflow-hidden h-[52px] rounded-xl border transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] flex items-center justify-center gap-2', 
+                        :class="['relative overflow-hidden h-[52px] rounded-xl border transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] flex items-center justify-center gap-2 btn-delete', 
                             isClearing 
-                                ? 'bg-red-500 border-red-500 text-white shadow-red-500/30 shadow-lg w-32' 
-                                : 'w-14 bg-white border-slate-200 text-slate-400 shadow-sm text-base hover:text-red-500 hover:border-red-500 hover:shadow-lg hover:shadow-red-500/20 hover:scale-[1.05] hover:-translate-y-0.5 active:scale-95']">
+                                ? 'bg-red-500 border-red-500 text-white shadow-red-500/30 shadow-lg w-32 is-clearing' 
+                                : 'w-14 bg-white border-slate-200 text-slate-400 shadow-sm text-base active:scale-95']">
 
                         <div v-if="isClearing" class="absolute inset-0 shine-effect pointer-events-none opacity-20">
                         </div>
