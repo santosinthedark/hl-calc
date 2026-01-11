@@ -194,7 +194,7 @@
 
                         <div class="flex flex-col gap-2 px-6 pt-2">
                             <div v-for="product in groupedProducts[cat]" :key="product.sku"
-                                :class="['flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] hover:border-green-500/40 hover:-translate-y-1 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden', getCardClass(product)]">
+                                :class="['flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(120,190,32,0.15)] hover:border-green-500 hover:bg-white hover:z-10 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden', getCardClass(product)]">
 
                                 <span class="text-[10px] font-mono text-slate-400 w-8 shrink-0">{{ product.sku }}</span>
 
