@@ -302,6 +302,10 @@
                         <span class="font-bold text-slate-900">{{ formatCurrency(totals.price) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
+                        <span class="text-slate-500">Мои расходы ({{ myDiscount }}%):</span>
+                        <span class="font-bold text-red-500">- {{ formatCurrency(totals.expenses) }}</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Мой доход:</span>
                         <span :class="['font-bold', totals.isLoss ? 'text-red-500' : 'text-green-600']">
                             {{ totals.isLoss ? '' : '+' }} {{ formatCurrency(totals.profit) }}
@@ -536,12 +540,16 @@
                     // Delivery is added to what client pays, but I still pay it out, so it doesn't affect profit margin from products
                     const finalClientPrice = totalPrice + delivery;
 
+                    // My expenses = Cost of products + Delivery (I pay for delivery)
+                    const totalExpenses = totalCost + delivery;
+
                     return {
                         vp: totalVP.toFixed(2),
                         price: finalClientPrice.toFixed(2),
                         retail: totalRetail.toFixed(2),
-                        profit: (totalPrice - totalCost).toFixed(2), // Profit ignores delivery (pass-through)
-                        isLoss: totalPrice < totalCost,
+                        profit: (finalClientPrice - totalExpenses).toFixed(2),
+                        expenses: totalExpenses.toFixed(2),
+                        isLoss: finalClientPrice < totalExpenses,
                         delivery: delivery
                     }
                 }
