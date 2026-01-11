@@ -248,7 +248,8 @@
                 </div>
             </div>
 
-            <div class="bg-white border-t border-slate-200 p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] pb-safe">
+            <div class="bg-white border-t border-slate-200 p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]"
+                style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
                 <div class="grid grid-cols-[1.5fr_1fr] gap-4 mb-6">
                     <div
                         class="flex flex-col justify-center gap-2.5 px-3 py-2 bg-slate-50/50 rounded-xl border border-slate-100/50">
@@ -289,30 +290,41 @@
                         </label>
                     </div>
 
+                    <!-- Total VP Block (Restored to Grid) -->
                     <div
                         class="p-3 bg-green-50 rounded-xl border border-green-100 flex flex-col justify-center items-end">
-                        <p class="text-sm text-green-600 font-semibold mb-0.5">Всего VP</p>
-                        <p class="text-xl font-bold text-green-700 leading-none">{{ formatNumber(totals.vp) }}</p>
+                        <p class="text-sm text-green-600 font-bold mb-0.5">Всего VP</p>
+                        <p class="text-xl font-bold text-green-700 leading-none cursor-pointer hover:opacity-75 active:scale-95 transition-all"
+                            @click="copyRawNumber(totals.vp)" title="Нажмите, чтобы скопировать число">{{
+                            formatNumber(totals.vp) }}</p>
                     </div>
                 </div>
 
+                <!-- Totals Details List -->
                 <div class="space-y-2 mb-6">
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Клиент платит ({{ clientDiscount}}%):</span>
-                        <span class="font-bold text-slate-900">{{ formatCurrency(totals.price) }}</span>
+                        <span
+                            class="font-bold text-slate-900 cursor-pointer hover:opacity-75 active:scale-95 transition-all"
+                            @click="copyRawNumber(totals.price)" title="Нажмите, чтобы скопировать число">{{
+                            formatCurrency(totals.price) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Мои расходы ({{ myDiscount }}%):</span>
-                        <span class="font-bold text-red-500">- {{ formatCurrency(totals.expenses) }}</span>
+                        <span
+                            class="font-bold text-red-500 cursor-pointer hover:opacity-75 active:scale-95 transition-all"
+                            @click="copyRawNumber(totals.expenses)" title="Нажмите, чтобы скопировать число">- {{
+                            formatCurrency(totals.expenses) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Мой доход:</span>
-                        <span :class="['font-bold', totals.isLoss ? 'text-red-500' : 'text-green-600']">
+                        <span
+                            :class="['font-bold cursor-pointer hover:opacity-75 active:scale-95 transition-all', totals.isLoss ? 'text-red-500' : 'text-green-600']"
+                            @click="copyRawNumber(totals.profit)" title="Нажмите, чтобы скопировать число">
                             {{ totals.isLoss ? '' : '+' }} {{ formatCurrency(totals.profit) }}
                         </span>
                     </div>
                 </div>
-
                 <div class="flex gap-2">
                     <button @click="copyOrder"
                         class="flex-1 bg-slate-900 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/20 active:translate-y-0.5">
@@ -330,23 +342,25 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Mobile Bottom Summary Bar -->
-        <div
-            class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 lg:hidden flex items-center justify-between gap-4 pb-safe">
-            <div class="flex flex-col">
-                <span class="text-xs text-slate-500 font-medium">{{ cartItemCount }} поз. на {{ totals.vp }} VP</span>
-                <span class="text-lg font-bold text-slate-900">{{ formatCurrency(totals.price) }}</span>
-            </div>
-            <button @click="isCartOpen = true"
-                class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-slate-900/20 active:scale-95 transition-transform flex items-center gap-2">
-                <span>Ваш заказ</span>
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18">
-                    </path>
-                </svg>
-            </button>
+    <!-- Mobile Bottom Summary Bar -->
+    <div
+        class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-40 lg:hidden flex items-center justify-between gap-4 pb-safe">
+        <div class="flex flex-col">
+            <span class="text-xs text-slate-500 font-medium">{{ cartItemCount }} поз. на {{ totals.vp }}
+                VP</span>
+            <span class="text-lg font-bold text-slate-900">{{ formatCurrency(totals.price) }}</span>
         </div>
+        <button @click="isCartOpen = true"
+            class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-slate-900/20 active:scale-95 transition-transform flex items-center gap-2">
+            <span>Ваш заказ</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18">
+                </path>
+            </svg>
+        </button>
+    </div>
 
     </div>
 
@@ -671,6 +685,20 @@
                             }
                         }, 100);
                     }
+                },
+                copyRawNumber(val) {
+                    if (val === undefined || val === null) return;
+                    // Prepare raw number: replace dot with comma for Russian locale, no spaces
+                    const raw = val.toString().replace('.', ',');
+
+                    navigator.clipboard.writeText(raw).then(() => {
+                        // Optional: Visual feedback (toast)
+                        const originalText = this.copyBtnText;
+                        this.copyBtnText = 'Скопировано число!';
+                        setTimeout(() => this.copyBtnText = 'Копировать заказ', 1000);
+                    }).catch(err => {
+                        console.error('Failed to copy', err);
+                    });
                 }
             }
         }).mount('#app')
