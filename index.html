@@ -72,6 +72,18 @@
         .fade-leave-to {
             opacity: 0;
         }
+
+        /* Hide spin buttons */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
     </style>
 </head>
 
@@ -267,13 +279,13 @@
                             / шт</p>
                     </div>
 
-                    <div class="flex items-center gap-1 bg-white border rounded-lg px-2 py-1 shadow-sm">
+                    <div class="flex items-center bg-slate-100 rounded-full h-9">
                         <button @click="updateQuantity(item, -1)"
-                            class="text-slate-400 hover:text-red-500 font-bold px-1 flex-shrink-0">−</button>
+                            class="w-8 h-full flex items-center justify-center text-slate-500 hover:text-red-500 font-bold active:bg-slate-200 rounded-l-full transition-colors">−</button>
                         <input type="number" v-model.number="item.qty" @change="validateQuantity(item)"
-                            class="w-12 text-center font-bold text-sm bg-transparent focus:bg-slate-50 focus:outline-none focus:ring-1 focus:ring-green-500 rounded p-0 border-none appearance-none hover:appearance-none">
+                            class="w-8 text-center font-bold text-sm bg-transparent border-none outline-none appearance-none p-0 focus:ring-0">
                         <button @click="updateQuantity(item, 1)"
-                            class="text-slate-400 hover:text-green-600 font-bold px-1 flex-shrink-0">+</button>
+                            class="w-8 h-full flex items-center justify-center text-slate-500 hover:text-green-600 font-bold active:bg-slate-200 rounded-r-full transition-colors">+</button>
                     </div>
                 </div>
             </div>
@@ -326,7 +338,7 @@
                         <p class="text-sm text-green-600 font-bold mb-0.5">Всего VP</p>
                         <p class="text-xl font-bold text-green-700 leading-none cursor-pointer hover:opacity-75 active:scale-95 transition-all"
                             @click="copyRawNumber(totals.vp)" title="Нажмите, чтобы скопировать число">{{
-                            formatNumber(totals.vp) }}</p>
+                            formatNumber(animatedVP) }}</p>
                     </div>
                 </div>
 
@@ -337,21 +349,21 @@
                         <span
                             class="font-bold text-slate-900 cursor-pointer hover:opacity-75 active:scale-95 transition-all"
                             @click="copyRawNumber(totals.price)" title="Нажмите, чтобы скопировать число">{{
-                            formatCurrency(totals.price) }}</span>
+                            formatCurrency(animatedPrice) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Мои расходы ({{ myDiscount }}%):</span>
                         <span
                             class="font-bold text-red-500 cursor-pointer hover:opacity-75 active:scale-95 transition-all"
                             @click="copyRawNumber(totals.expenses)" title="Нажмите, чтобы скопировать число">- {{
-                            formatCurrency(totals.expenses) }}</span>
+                            formatCurrency(animatedExpenses) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Мой доход:</span>
                         <span
                             :class="['font-bold cursor-pointer hover:opacity-75 active:scale-95 transition-all', totals.isLoss ? 'text-red-500' : 'text-green-600']"
                             @click="copyRawNumber(totals.profit)" title="Нажмите, чтобы скопировать число">
-                            {{ totals.isLoss ? '' : '+' }} {{ formatCurrency(totals.profit) }}
+                            {{ totals.isLoss ? '' : '+' }} {{ formatCurrency(animatedProfit) }}
                         </span>
                     </div>
                 </div>
@@ -380,9 +392,10 @@
             <div v-if="!isCartOpen && cartItemCount > 0"
                 class="fixed bottom-6 left-4 right-4 w-auto bg-slate-50/60 backdrop-blur-md border border-slate-200/60 px-4 py-3 rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] z-40 lg:hidden flex items-center justify-between gap-4">
                 <div class="flex flex-col">
-                    <span class="text-xs text-slate-500 font-medium">{{ cartItemCount }} поз. на {{ totals.vp }}
+                    <span class="text-xs text-slate-500 font-medium">{{ cartItemCount }} поз. на {{
+                        formatNumber(animatedVP) }}
                         VP</span>
-                    <span class="text-lg font-bold text-slate-900">{{ formatCurrency(totals.price) }}</span>
+                    <span class="text-lg font-bold text-slate-900">{{ formatCurrency(animatedPrice) }}</span>
                 </div>
                 <button @click="isCartOpen = true"
                     class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-slate-900/20 active:scale-95 transition-transform flex items-center gap-2">
@@ -415,6 +428,10 @@
                     isCartOpen: false,
                     selectedCategory: 'all',
                     cart: [],
+                    animatedPrice: 0,
+                    animatedVP: 0,
+                    animatedExpenses: 0,
+                    animatedProfit: 0,
                     isClearing: false,
                     copyBtnText: 'Копировать заказ',
                     // Data parsed directly from your CSV file
@@ -542,6 +559,32 @@
                         const toSave = val.map(item => ({ sku: item.product.sku, qty: item.qty }));
                         localStorage.setItem('hl_cart', JSON.stringify(toSave));
                     }
+                },
+                'totals': {
+                    handler(newVal, oldVal) {
+                        // Animate Price
+                        const targetPrice = parseFloat(newVal.price);
+                        this.tweenValue(this.animatedPrice, targetPrice, 500, (val) => {
+                            this.animatedPrice = val;
+                        });
+                        // Animate VP
+                        const targetVP = parseFloat(newVal.vp);
+                        this.tweenValue(this.animatedVP, targetVP, 500, (val) => {
+                            this.animatedVP = val;
+                        });
+                        // Animate Expenses
+                        const targetExpenses = parseFloat(newVal.expenses);
+                        this.tweenValue(this.animatedExpenses, targetExpenses, 500, (val) => {
+                            this.animatedExpenses = val;
+                        });
+                        // Animate Profit
+                        const targetProfit = parseFloat(newVal.profit);
+                        this.tweenValue(this.animatedProfit, targetProfit, 500, (val) => {
+                            this.animatedProfit = val;
+                        });
+                    },
+                    deep: true,
+                    immediate: true
                 }
             },
             computed: {
@@ -670,7 +713,7 @@
                     return new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(val);
                 },
                 formatNumber(val) {
-                    return new Intl.NumberFormat('ru-RU').format(val);
+                    return new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
                 },
                 copyOrder() {
                     if (this.cart.length === 0) return;
@@ -745,6 +788,19 @@
                     }).catch(err => {
                         console.error('Failed to copy', err);
                     });
+                },
+                tweenValue(start, end, duration, callback) {
+                    let startTime = null;
+                    const step = (timestamp) => {
+                        if (!startTime) startTime = timestamp;
+                        const progress = Math.min((timestamp - startTime) / duration, 1);
+                        // Easing function (easeOutQuad)
+                        const ease = 1 - (1 - progress) * (1 - progress);
+                        const value = start + (end - start) * ease;
+                        callback(value);
+                        if (progress < 1) window.requestAnimationFrame(step);
+                    };
+                    window.requestAnimationFrame(step);
                 }
             }
         }).mount('#app')
