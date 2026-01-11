@@ -624,6 +624,16 @@
                 }
             },
             mounted() {
+                // Determine if mobile device
+                this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 1024;
+                window.addEventListener('resize', () => {
+                    this.isMobile = window.innerWidth < 1024;
+                });
+
+                // iOS Active State Hack
+                document.addEventListener("touchstart", function () { }, false);
+
+                // Load settings
                 // Load settings
                 const savedMyDiscount = localStorage.getItem('hl_my_discount');
                 if (savedMyDiscount) this.myDiscount = Number(savedMyDiscount);
