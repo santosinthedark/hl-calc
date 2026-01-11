@@ -65,8 +65,9 @@
 
     <div id="app" class="h-screen flex flex-col lg:flex-row overflow-hidden text-slate-800">
 
-        <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden">
-            <header
+        <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden"
+            ref="mainScrollContainer">
+            <header ref="mainHeader"
                 class="bg-white px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm z-20">
                 <div class="flex items-center gap-3">
                     <div
@@ -680,8 +681,9 @@
                     // preventing the header from scrolling back down
                     if (window.innerWidth < 1024) {
                         setTimeout(() => {
-                            if (this.$refs.searchBar) {
-                                this.$refs.searchBar.scrollIntoView({ behavior: 'auto', block: 'start' });
+                            // Scroll past the header so Search Bar is at top
+                            if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
+                                this.$refs.mainScrollContainer.scrollTop = this.$refs.mainHeader.offsetHeight;
                             }
                         }, 100);
                     }
