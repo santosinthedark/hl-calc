@@ -632,17 +632,18 @@
                             const price = this.getPrice(item.product, this.clientDiscount);
                             lines.push(`${item.product.name} x${item.qty} = ${this.formatCurrency(price * item.qty)}`);
                         });
-
-                        lines.push(``);
-                        lines.push(`----------------`);
-                        lines.push(`Итого VP: ${this.totals.vp}`);
-
-                        if (this.totals.delivery > 0) {
-                            lines.push(`Доставка: ${this.formatCurrency(this.totals.delivery)}`);
-                        }
-
-                        lines.push(`К оплате: ${this.formatCurrency(this.totals.price)}`);
                     }
+
+                    // Footer - now included in both modes
+                    lines.push(``);
+                    lines.push(`----------------`);
+                    lines.push(`Итого VP: ${this.totals.vp}`);
+
+                    if (this.totals.delivery > 0) {
+                        lines.push(`Доставка: ${this.formatCurrency(this.totals.delivery)}`);
+                    }
+
+                    lines.push(`К оплате: ${this.formatCurrency(this.totals.price)}`);
 
                     const text = lines.join('\n');
                     navigator.clipboard.writeText(text).then(() => {
