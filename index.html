@@ -214,11 +214,16 @@
                                     </p>
                                 </div>
 
-                                <button @click="addToCart(product)"
-                                    class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-green-600 transition-all duration-100 shadow-md active:scale-75 shrink-0 group-hover:scale-110">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <button @click.stop="addToCart(product)"
+                                    :class="['w-8 h-8 rounded-full text-white flex items-center justify-center shadow-md shrink-0 transition-all duration-300', product.justAdded ? 'bg-green-500 scale-110 rotate-0' : 'bg-slate-900 hover:bg-green-600 active:scale-75 group-hover:scale-110']">
+                                    <svg v-if="!product.justAdded" class="w-4 h-4" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 </button>
                             </div>
@@ -681,6 +686,13 @@
                 },
                 addToCart(product) {
                     this.vibrate(15);
+
+                    // Button Morph Animation
+                    product.justAdded = true;
+                    setTimeout(() => {
+                        product.justAdded = false;
+                    }, 600);
+
                     const existing = this.cart.find(i => i.product.sku === product.sku);
                     if (existing) {
                         existing.qty++;
