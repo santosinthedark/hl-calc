@@ -127,7 +127,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-bold text-slate-400">моя скидка</span>
                         <div class="inline-flex bg-slate-100 p-1 rounded-xl">
-                            <button v-for="disc in myDiscounts" :key="'my'+disc" @click="myDiscount = disc"
+                            <button v-for="disc in myDiscounts" :key="'my'+disc" @click="myDiscount = disc; vibrate(15)"
                                 :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-100 active:scale-90', myDiscount === disc ? 'bg-white shadow-sm text-slate-900' : 'text-slate-500 hover:text-slate-700']">
                                 {{ disc === 100 ? '100%' : disc + '%' }}
                             </button>
@@ -138,7 +138,8 @@
                     <div class="flex items-center gap-2">
                         <span class="text-sm font-bold text-slate-400 text-right leading-tight">заказ под</span>
                         <div class="inline-flex bg-slate-100 p-1 rounded-xl">
-                            <button v-for="disc in clientDiscounts" :key="'client'+disc" @click="clientDiscount = disc"
+                            <button v-for="disc in clientDiscounts" :key="'client'+disc"
+                                @click="clientDiscount = disc; vibrate(15)"
                                 :class="['px-3 py-1.5 text-xs font-bold rounded-lg transition-all duration-100 active:scale-90', clientDiscount === disc ? 'bg-white shadow-sm text-green-600' : 'text-slate-500 hover:text-slate-700']">
                                 {{ disc === 100 ? '100%' : disc + '%' }}
                             </button>
@@ -176,9 +177,9 @@
                     </div>
 
                     <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
-                        <button @click="selectedCategory = 'all'"
+                        <button @click="selectedCategory = 'all'; vibrate(15)"
                             :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === 'all' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">Все</button>
-                        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat"
+                        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat; vibrate(15)"
                             :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === cat ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">
                             {{ cat }}
                         </button>
@@ -649,6 +650,15 @@
                 }
             },
             methods: {
+                vibrate(ms) {
+                    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                        try {
+                            navigator.vibrate(ms);
+                        } catch (e) {
+                            // Ignore vibration errors
+                        }
+                    }
+                },
                 getCardClass(product) {
                     if (this.selectedCategory !== 'all') {
                         return 'bg-white border-slate-100';
@@ -670,6 +680,7 @@
                     return product[map[discount]];
                 },
                 addToCart(product) {
+                    this.vibrate(15);
                     const existing = this.cart.find(i => i.product.sku === product.sku);
                     if (existing) {
                         existing.qty++;
@@ -688,6 +699,7 @@
                     }
                 },
                 updateQuantity(item, delta) {
+                    this.vibrate(15);
                     item.qty += delta;
                     if (item.qty <= 0) {
                         this.cart = this.cart.filter(i => i.product.sku !== item.product.sku);
@@ -702,10 +714,12 @@
                 },
                 clearCart() {
                     if (this.isClearing) {
+                        this.vibrate(50);
                         this.cart = [];
                         this.isClearing = false;
                     } else {
                         this.isClearing = true;
+                        this.vibrate(15); // Light warning vibration
                         setTimeout(() => this.isClearing = false, 3000);
                     }
                 },
@@ -783,7 +797,7 @@
                     navigator.clipboard.writeText(raw).then(() => {
                         // Optional: Visual feedback (toast)
                         const originalText = this.copyBtnText;
-                        this.copyBtnText = 'Цифры скопированы';
+                        this.copyBtnText = 'Число скопировано';
                         setTimeout(() => this.copyBtnText = 'Копировать заказ', 1000);
                     }).catch(err => {
                         console.error('Failed to copy', err);
