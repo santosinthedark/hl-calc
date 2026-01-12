@@ -178,7 +178,7 @@
         style="overscroll-behavior-y: none;">
 
         <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden"
-            ref="mainScrollContainer">
+            ref="mainScrollContainer" style="scrollbar-gutter: stable;">
             <header ref="mainHeader"
                 class="bg-white/90 backdrop-blur-md px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm z-20">
                 <div class="flex items-center gap-3">
@@ -237,7 +237,7 @@
 
 
 
-            <div class="flex-1 bg-slate-50 pb-36 lg:pb-0 lg:overflow-y-auto overflow-visible"
+            <div class="flex-1 bg-slate-50 pb-36 lg:pb-0 lg:overflow-y-auto overflow-visible" ref="contentWrapper"
                 :class="{'min-h-[150vh]': searchQuery.length > 0}">
 
                 <!-- Search Bar (Moved Inside for Desktop Sticky Layering) -->
@@ -696,8 +696,31 @@
                 clientDiscount(val) {
                     localStorage.setItem('hl_client_discount', val);
                 },
-                selectedCategory(val) {
+                selectedCategory(val, oldVal) {
                     localStorage.setItem('hl_category', val);
+
+                    // Mobile: Handle scroll and min-height for category switching
+                    if (window.innerWidth < 1024 && this.$refs.mainScrollContainer && this.$refs.mainHeader && this.$refs.contentWrapper) {
+                        const headerHeight = this.$refs.mainHeader.offsetHeight;
+
+                        // ONLY apply min-height to SHORT categories to enable scrolling
+                        // For "all" and long categories, use original behavior to preserve sticky search
+                        const shortCategories = ['Контроль веса', 'Литература'];
+                        if (shortCategories.includes(val)) {
+                            this.$refs.contentWrapper.style.minHeight = '120vh';
+                        } else {
+                            // IMPORTANT: Remove JS min-height for other categories to preserve sticky
+                            this.$refs.contentWrapper.style.minHeight = '';
+                        }
+
+                        // Scroll to hide header and show sticky search
+                        this.$nextTick(() => {
+                            this.$refs.mainScrollContainer.scrollTo({
+                                top: headerHeight,
+                                behavior: 'auto'
+                            });
+                        });
+                    }
                 },
                 hasDelivery(val) {
                     localStorage.setItem('hl_has_delivery', val);
