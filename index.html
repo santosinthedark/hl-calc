@@ -86,24 +86,26 @@
         }
 
         /* Анимация элементов списка */
-        .list-move,
-        .list-enter-active,
-        .list-leave-active {
-            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        .list-move {
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }
 
-        .list-enter-from,
-        .list-leave-to {
+        .list-enter-active {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .list-leave-active {
+            transition: all 0.2s ease-out !important;
+        }
+
+        .list-enter-from {
             opacity: 0 !important;
             transform: scale(0.95) !important;
         }
 
-        /* Важно: чтобы при удалении элемент не занимал место во время анимации */
-        .list-leave-active {
-            position: absolute !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
+        .list-leave-to {
+            opacity: 0 !important;
+            transform: translateX(-15px) scale(0.95) !important;
         }
 
         @keyframes subtle-shine {
@@ -456,7 +458,7 @@
                             {{ cat }}</h3>
 
                         <div class="px-6 pt-2 relative">
-                            <TransitionGroup name="list" tag="div" class="flex flex-col gap-2 relative w-full">
+                            <transition-group name="list" tag="div" class="flex flex-col gap-2 relative w-full">
                                 <div v-for="product in groupedProducts[cat]" :key="product.sku" class="w-full relative">
                                     <div @mousemove="handleMouseMove"
                                         :class="['spotlight-card flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(120,190,32,0.15)] hover:border-green-500 hover:bg-white hover:z-10 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden bg-white', getCardClass(product)]">
@@ -499,7 +501,7 @@
                                         </button>
                                     </div>
                                 </div>
-                            </TransitionGroup>
+                            </transition-group>
                         </div>
                     </div>
                 </div>
@@ -566,7 +568,7 @@
                     </p>
                 </div>
 
-                <TransitionGroup name="list" tag="div" class="space-y-3 relative">
+                <transition-group name="list" tag="div" class="flex flex-col gap-3 relative overflow-hidden">
                     <div v-for="item in cart" :key="item.product.sku"
                         class="flex gap-3 items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                         <div class="flex-1 min-w-0">
@@ -585,7 +587,7 @@
                                 class="w-8 h-full flex items-center justify-center text-slate-500 font-bold active:bg-slate-200 active:text-green-600 rounded-r-full transition-colors btn-plus">+</button>
                         </div>
                     </div>
-                </TransitionGroup>
+                </transition-group>
             </div>
 
             <div class="bg-white border-t border-slate-200 p-6 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]"
