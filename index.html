@@ -267,17 +267,19 @@
         }
 
         /* Animated Trash Lid */
-        .btn-delete:hover .trash-lid {
-            transform: rotate(-12deg) translateY(-2px);
+        /* Only apply hover effects on devices that support hover */
+        @media (hover: hover) {
+            .btn-delete:hover .trash-lid {
+                transform: rotate(-12deg) translateY(-2px);
+            }
+
+            .btn-delete:hover svg {
+                color: #ef4444;
+            }
         }
 
         .btn-delete.is-clearing .trash-lid {
             transform: rotate(-30deg) translateY(-4px);
-        }
-
-        /* Change icon color on button hover */
-        .btn-delete:hover svg {
-            color: #ef4444;
         }
 
         /* iOS Toggle Switch */
