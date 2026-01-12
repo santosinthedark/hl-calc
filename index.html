@@ -265,6 +265,68 @@
         .animate-shake {
             animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
         }
+
+        /* Animated Trash Lid */
+        .btn-delete:hover .trash-lid {
+            transform: rotate(-12deg) translateY(-2px);
+        }
+
+        .btn-delete.is-clearing .trash-lid {
+            transform: rotate(-30deg) translateY(-4px);
+        }
+
+        /* Change icon color on button hover */
+        .btn-delete:hover svg {
+            color: #ef4444;
+        }
+
+        /* iOS Toggle Switch */
+        .ios-switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .ios-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e2e8f0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input:checked+.slider {
+            background-color: #22c55e;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(16px);
+        }
     </style>
 </head>
 
@@ -513,42 +575,29 @@
                 style="padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));">
                 <div class="grid grid-cols-[1.5fr_1fr] gap-4 mb-6">
                     <div
-                        class="flex flex-col justify-center gap-2.5 px-3 py-2 bg-slate-50/50 rounded-xl border border-slate-100/50">
+                        class="flex flex-col justify-center gap-2 px-3 py-2 bg-slate-50/80 rounded-2xl border border-slate-100">
                         <!-- Delivery Control -->
-                        <div class="flex items-center justify-between group">
-                            <label class="flex items-center gap-2 cursor-pointer select-none">
-                                <div class="relative flex items-center">
-                                    <input type="checkbox" v-model="hasDelivery"
-                                        class="peer appearance-none w-4 h-4 border-2 border-slate-300 rounded transition-colors checked:bg-green-500 checked:border-green-500">
-                                    <svg class="absolute w-2.5 h-2.5 text-white left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
-                                        viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </div>
-                                <span
-                                    class="text-sm font-bold text-slate-500 group-hover:text-slate-700 transition-colors">Доставка</span>
+                        <div class="flex items-center gap-2">
+                            <label class="ios-switch">
+                                <input type="checkbox" v-model="hasDelivery" @change="vibrate(15)">
+                                <span class="slider"></span>
                             </label>
-                            <input type="number" v-model="deliveryCost" :disabled="!hasDelivery"
-                                class="w-16 text-right text-xs font-bold text-slate-700 bg-white border border-slate-200 rounded-md px-2 py-1 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500/20 disabled:opacity-40 disabled:bg-slate-50 transition-all placeholder-slate-300 shadow-sm"
-                                placeholder="0">
+                            <span class="text-xs font-bold text-slate-600 flex-1">Доставка</span>
+                            <input type="number" v-model="deliveryCost"
+                                class="w-14 text-right text-xs font-bold bg-white border border-slate-200 rounded-md px-1.5 py-0.5 focus:outline-none focus:border-green-500 transition-all shadow-sm placeholder-slate-300"
+                                :class="hasDelivery ? 'text-slate-900 opacity-100' : 'text-slate-300 opacity-50'"
+                                :disabled="!hasDelivery" placeholder="0">
                         </div>
-
+                        <!-- Divider -->
+                        <div class="h-px bg-slate-200 w-full"></div>
                         <!-- Simple Copy Control -->
-                        <label class="flex items-center gap-2 cursor-pointer select-none group">
-                            <div class="relative flex items-center">
-                                <input type="checkbox" v-model="simpleCopy"
-                                    class="peer appearance-none w-4 h-4 border-2 border-slate-300 rounded transition-colors checked:bg-green-500 checked:border-green-500">
-                                <svg class="absolute w-2.5 h-2.5 text-white left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
-                                    viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </div>
-                            <span
-                                class="text-sm font-bold text-slate-500 group-hover:text-slate-700 transition-colors">Копировать
-                                без цен</span>
-                        </label>
+                        <div class="flex items-center gap-2">
+                            <label class="ios-switch">
+                                <input type="checkbox" v-model="simpleCopy" @change="vibrate(15)">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="text-xs font-bold text-slate-600">Копировать без цен</span>
+                        </div>
                     </div>
 
                     <!-- Total VP Block (Restored to Grid) -->
@@ -618,11 +667,17 @@
                         </div>
 
                         <span v-if="isClearing" class="font-bold whitespace-nowrap">Удалить?</span>
-                        <svg v-else class="w-5 h-5 flex-shrink-0 transition-transform duration-300" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
+                        <svg v-else
+                            class="w-5 h-5 flex-shrink-0 text-slate-400 group-hover:text-red-500 transition-colors"
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <!-- Trash body -->
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6">
                             </path>
+                            <!-- Trash lid (animated) -->
+                            <path class="trash-lid origin-bottom transition-transform duration-300"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 7h16M10 7V4a1 1 0 011-1h2a1 1 0 011 1v3"></path>
                         </svg>
                     </button>
                 </div>
