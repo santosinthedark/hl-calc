@@ -6,6 +6,8 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Калькулятор заказа Herbalife</title>
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%2316a34a'/%3E%3Cg transform='translate(6,6) scale(0.5)'%3E%3Cpath d='M16 2H8C5 2 3 4 3 7V17C3 20 5 22 8 22H16C19 22 21 20 21 17V7C21 4 19 2 16 2Z' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M10.5 7H13.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.5 12H8.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M11.5 12H12.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.5 12H16.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M7.5 16H8.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M11.5 16H12.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.5 16H16.5' stroke='white' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/g%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -15,6 +17,12 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
+        }
+
+        ::selection {
+            background-color: #22c55e;
+            /* green-500 */
+            color: white;
         }
 
         * {
@@ -110,6 +118,37 @@
         .list-leave-to {
             opacity: 0 !important;
             transform: translateX(-15px) scale(0.95) !important;
+        }
+
+        /* Cart specific animation (fix duplication glitch) */
+        .cart-list-move {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            z-index: 1;
+            /* Items moving up stay above */
+            position: relative;
+        }
+
+        .cart-list-enter-active {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .cart-list-leave-active {
+            transition: all 0.25s ease-out !important;
+            position: absolute !important;
+            width: 100% !important;
+            z-index: -1;
+            /* Deleted item goes behind */
+            pointer-events: none;
+        }
+
+        .cart-list-enter-from {
+            opacity: 0 !important;
+            transform: scale(0.95) !important;
+        }
+
+        .cart-list-leave-to {
+            opacity: 0 !important;
+            transform: translateX(-30px) !important;
         }
 
         /* Staggered Entrance Animation */
@@ -591,7 +630,7 @@
                     </p>
                 </div>
 
-                <transition-group name="list" tag="div" class="flex flex-col gap-3 relative overflow-hidden">
+                <transition-group name="cart-list" tag="div" class="flex flex-col gap-3 relative overflow-hidden">
                     <div v-for="item in cart" :key="item.product.sku"
                         class="flex gap-3 items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                         <div class="flex-1 min-w-0">
