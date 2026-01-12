@@ -368,6 +368,41 @@
             z-index: 10;
         }
 
+        .btn-add-interactive {
+            background-color: #0f172a;
+            /* slate-900 */
+        }
+
+        .btn-add-interactive:active {
+            transform: scale(0.75);
+        }
+
+        .btn-add-last-active {
+            background-color: #15803d;
+            /* green-700 */
+        }
+
+        .btn-add-last-active:active {
+            transform: scale(0.95);
+        }
+
+        @media (hover: hover) {
+            .btn-add-interactive:hover {
+                background-color: #16a34a;
+                /* green-600 */
+            }
+
+            .btn-add-last-active:hover {
+                background-color: #166534;
+                /* green-800 */
+            }
+
+            /* Group hover effect: scale button when card is hovered */
+            .group:hover .btn-add-interactive {
+                transform: scale(1.1);
+            }
+        }
+
         .product-card-interactive {
             user-select: none;
             -webkit-user-select: none;
@@ -589,7 +624,7 @@
                                         </div>
 
                                         <button @click.stop="addToCart(product)"
-                                            :class="['w-8 h-8 rounded-full text-white flex items-center justify-center shadow-md shrink-0 transition-all duration-300', product.justAdded ? 'bg-green-500 scale-110 rotate-0' : 'bg-slate-900 hover:bg-green-600 active:scale-75 group-hover:scale-110']">
+                                            :class="['w-8 h-8 rounded-full text-white flex items-center justify-center shadow-md shrink-0 transition-all duration-300', product.justAdded ? 'bg-green-500 scale-110 rotate-0' : (lastAddedSku === product.sku ? 'btn-add-last-active' : 'btn-add-interactive')]">
                                             <svg v-if="!product.justAdded" class="w-4 h-4" fill="none"
                                                 stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -841,6 +876,7 @@
             data() {
                 return {
                     searchQuery: '',
+                    lastAddedSku: null,
                     myDiscount: 50, // Your buying discount
                     clientDiscount: 100, // Client selling discount (default to Retail)
                     myDiscounts: [50, 42, 35, 25],
@@ -1148,6 +1184,7 @@
 
                     // Button Morph Animation
                     product.justAdded = true;
+                    this.lastAddedSku = product.sku;
                     setTimeout(() => {
                         product.justAdded = false;
                     }, 600);
