@@ -273,6 +273,7 @@
         }
 
         /* Spotlight Effect for Product Cards */
+        /* Spotlight Effect for Product Cards - Desktop Only */
         .spotlight-card {
             position: relative;
             overflow: hidden;
@@ -280,24 +281,26 @@
             --mouse-y: 50%;
         }
 
-        .spotlight-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y),
-                    rgba(120, 190, 32, 0.15),
-                    transparent 40%);
-            opacity: 0;
-            transition: opacity 0.5s;
-            pointer-events: none;
-            z-index: 1;
-        }
+        @media (hover: hover) {
+            .spotlight-card::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y),
+                        rgba(120, 190, 32, 0.15),
+                        transparent 40%);
+                opacity: 0;
+                transition: opacity 0.5s;
+                pointer-events: none;
+                z-index: 1;
+            }
 
-        .spotlight-card:hover::before {
-            opacity: 1;
+            .spotlight-card:hover::before {
+                opacity: 1;
+            }
         }
 
         /* Shake Animation for Error */
@@ -343,6 +346,42 @@
 
         .btn-delete.is-clearing .trash-lid {
             transform: rotate(-30deg) translateY(-4px);
+        }
+
+        /* Mobile Scroll Optimization */
+        @media (hover: hover) {
+            .product-card-interactive:hover {
+                transform: scale(1.02);
+                box-shadow: 0 8px 30px rgba(120, 190, 32, 0.15);
+                border-color: #22c55e !important;
+                background-color: white;
+                z-index: 10;
+            }
+        }
+
+        /* Active Card Feedback (Mobile Touch) */
+        .active-card-feedback {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(120, 190, 32, 0.15);
+            border-color: #22c55e !important;
+            background-color: white;
+            z-index: 10;
+        }
+
+        .product-card-interactive {
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: pan-y;
+            /* Explicitly allow vertical scroll */
+        }
+
+        /* Active Card Feedback (Mobile Touch) */
+        .active-card-feedback {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(120, 190, 32, 0.15);
+            border-color: #22c55e !important;
+            background-color: white;
+            z-index: 10;
         }
 
         /* iOS Toggle Switch */
@@ -524,7 +563,7 @@
                                     class="w-full relative stagger-appear"
                                     :style="{ animationDelay: (index * 50) + 'ms' }">
                                     <div @mousemove="handleMouseMove"
-                                        :class="['spotlight-card flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(120,190,32,0.15)] hover:border-green-500 hover:bg-white hover:z-10 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden bg-white', getCardClass(product)]">
+                                        :class="['product-card-interactive spotlight-card flex items-center gap-3 p-3 rounded-xl border shadow-sm duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden bg-white', getCardClass(product)]">
 
                                         <span class="text-[10px] font-mono text-slate-400 w-8 shrink-0">{{ product.sku
                                             }}</span>
@@ -541,7 +580,7 @@
                                             product.vp }} VP</span>
 
                                         <div class="text-right shrink-0 min-w-[60px] sm:min-w-[80px]">
-                                            <p class="text-sm font-bold text-slate-900 leading-none">{{
+                                            <p class="text-sm font-bold text-slate-900 leading-none tabular-nums">{{
                                                 formatCurrency(getPrice(product, clientDiscount)) }}</p>
                                             <p class="text-[10px] font-bold text-green-600 sm:hidden mt-0.5">{{
                                                 product.vp
@@ -636,9 +675,8 @@
                         class="flex gap-3 items-center bg-slate-50 p-3 rounded-lg border border-slate-100">
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-slate-900 truncate">{{ item.product.name }}</p>
-                            <p class="text-xs text-slate-500">{{ formatCurrency(getPrice(item.product, clientDiscount))
-                                }}
-                                / шт</p>
+                            <p class="text-xs text-slate-500 tabular-nums">{{ formatCurrency(getPrice(item.product,
+                                clientDiscount)) }}</p>
                         </div>
 
                         <div class="flex items-center bg-slate-100 rounded-full h-9">
@@ -700,14 +738,14 @@
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Клиент платит ({{ clientDiscount}}%):</span>
                         <span
-                            class="font-bold cursor-pointer hover:opacity-75 active:scale-95 transition-all bg-gradient-to-br from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent"
+                            class="font-bold cursor-pointer hover:opacity-75 active:scale-95 transition-all bg-gradient-to-br from-slate-900 via-slate-700 to-slate-900 bg-clip-text text-transparent tabular-nums"
                             @click="copyRawNumber(totals.price)" title="Нажмите, чтобы скопировать число">{{
                             formatCurrency(animatedPrice) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-slate-500">Мои расходы ({{ myDiscount }}%):</span>
                         <span
-                            class="font-bold text-red-500 cursor-pointer hover:opacity-75 active:scale-95 transition-all"
+                            class="font-bold text-red-500 cursor-pointer hover:opacity-75 active:scale-95 transition-all tabular-nums"
                             @click="copyRawNumber(totals.expenses)" title="Нажмите, чтобы скопировать число">- {{
                             formatCurrency(animatedExpenses) }}</span>
                     </div>
@@ -1085,6 +1123,7 @@
                     }
                 },
                 getCardClass(product) {
+                    if (product.justAdded) return 'active-card-feedback';
                     if (this.selectedCategory !== 'all') {
                         return 'bg-white border-slate-100';
                     }
