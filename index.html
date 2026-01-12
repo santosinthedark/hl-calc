@@ -108,6 +108,23 @@
             transform: translateX(-15px) scale(0.95) !important;
         }
 
+        /* Staggered Entrance Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stagger-appear {
+            animation: fadeInUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
         @keyframes subtle-shine {
             0% {
                 background-position: 200% center;
@@ -459,7 +476,9 @@
 
                         <div class="px-6 pt-2 relative">
                             <transition-group name="list" tag="div" class="flex flex-col gap-2 relative w-full">
-                                <div v-for="product in groupedProducts[cat]" :key="product.sku" class="w-full relative">
+                                <div v-for="(product, index) in groupedProducts[cat]" :key="product.sku"
+                                    class="w-full relative stagger-appear"
+                                    :style="{ animationDelay: (index * 50) + 'ms' }">
                                     <div @mousemove="handleMouseMove"
                                         :class="['spotlight-card flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(120,190,32,0.15)] hover:border-green-500 hover:bg-white hover:z-10 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden bg-white', getCardClass(product)]">
 
