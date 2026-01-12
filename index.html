@@ -208,6 +208,34 @@
             animation: logo-shine 7s infinite ease-in-out;
             pointer-events: none;
         }
+
+        /* Spotlight Effect for Product Cards */
+        .spotlight-card {
+            position: relative;
+            overflow: hidden;
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+
+        .spotlight-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y),
+                    rgba(120, 190, 32, 0.15),
+                    transparent 40%);
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .spotlight-card:hover::before {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -322,8 +350,8 @@
                         <div class="px-6 pt-2 relative">
                             <TransitionGroup name="list" tag="div" class="flex flex-col gap-2 relative w-full">
                                 <div v-for="product in groupedProducts[cat]" :key="product.sku" class="w-full relative">
-                                    <div
-                                        :class="['flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(120,190,32,0.15)] hover:border-green-500 hover:bg-white hover:z-10 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden bg-white', getCardClass(product)]">
+                                    <div @mousemove="handleMouseMove"
+                                        :class="['spotlight-card flex items-center gap-3 p-3 rounded-xl border shadow-sm hover:scale-[1.02] hover:shadow-[0_8px_30px_rgb(120,190,32,0.15)] hover:border-green-500 hover:bg-white hover:z-10 duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] transition-all group relative overflow-hidden bg-white', getCardClass(product)]">
 
                                         <span class="text-[10px] font-mono text-slate-400 w-8 shrink-0">{{ product.sku
                                             }}</span>
@@ -1006,6 +1034,14 @@
                     }).catch(err => {
                         alert('Не удалось скопировать текст');
                     });
+                },
+                handleMouseMove(e) {
+                    const card = e.currentTarget;
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
                 },
                 fixSearchScroll() {
                     // Mobile optimization: When search is focused, ensure it stays sticky at top
