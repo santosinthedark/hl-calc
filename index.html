@@ -236,6 +236,35 @@
         .spotlight-card:hover::before {
             opacity: 1;
         }
+
+        /* Shake Animation for Error */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-5px);
+            }
+
+            40% {
+                transform: translateX(5px);
+            }
+
+            60% {
+                transform: translateX(-5px);
+            }
+
+            80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .animate-shake {
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+        }
     </style>
 </head>
 
@@ -564,7 +593,8 @@
                     <button @click="copyOrder" :class="['relative overflow-hidden flex-1 h-[52px] rounded-xl text-base font-bold shadow-lg transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] active:scale-90 flex items-center justify-center gap-2 btn-copy',
                             orderCopied 
                                 ? 'bg-slate-900 border border-transparent text-green-400 shadow-green-500/20 scale-[1.02] is-copied' 
-                                : 'bg-slate-900 border border-transparent text-white shadow-slate-900/20']">
+                                : 'bg-slate-900 border border-transparent text-white shadow-slate-900/20',
+                            { 'animate-shake': shakeError }]">
 
                         <div v-if="!orderCopied" class="absolute inset-0 shine-effect pointer-events-none opacity-20">
                         </div>
@@ -653,6 +683,7 @@
 
                     isClearing: false,
                     orderCopied: false,
+                    shakeError: false,
                     copyFeedbackText: 'Скопировано',
                     // Data parsed directly from your CSV file
                     rawDb: [
@@ -994,7 +1025,12 @@
                     return new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
                 },
                 copyOrder() {
-                    if (this.cart.length === 0) return;
+                    if (this.cart.length === 0) {
+                        this.shakeError = true;
+                        this.vibrate(50);
+                        setTimeout(() => this.shakeError = false, 400);
+                        return;
+                    }
 
                     const lines = [];
 
