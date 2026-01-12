@@ -169,21 +169,61 @@
         button {
             -webkit-tap-highlight-color: transparent;
         }
+
+        /* Premium Logo Shine Animation */
+        @keyframes logo-shine {
+            0% {
+                transform: translateX(-150%) skewX(-25deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(150%) skewX(-25deg);
+                opacity: 0;
+            }
+        }
+
+        .logo-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
+            transform: translateX(-150%) skewX(-25deg);
+            animation: logo-shine 7s infinite ease-in-out;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body>
 
-    <div id="app" class="h-screen h-[100dvh] flex flex-col lg:flex-row overflow-hidden text-slate-800"
+    <div id="app" class="h-screen h-[100dvh] flex flex-col lg:flex-row overflow-hidden text-slate-800 bg-slate-900"
         style="overscroll-behavior-y: none;">
 
-        <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden"
+        <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] origin-top bg-white"
+            :class="isCartOpen ? 'scale-[0.93] rounded-[2rem] opacity-80 translate-y-4' : 'scale-100 rounded-none opacity-100 translate-y-0'"
             ref="mainScrollContainer" style="scrollbar-gutter: stable;">
             <header ref="mainHeader"
                 class="bg-white/90 backdrop-blur-md px-6 py-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm z-20">
                 <div class="flex items-center gap-3">
                     <div
-                        class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-green-600/20">
+                        class="logo-container w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white shadow-lg shadow-green-600/20">
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M16 2H8C5 2 3 4 3 7V17C3 20 5 22 8 22H16C19 22 21 20 21 17V7C21 4 19 2 16 2Z"
                                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
