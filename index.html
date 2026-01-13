@@ -673,7 +673,7 @@
                     </div>
                 </div>
 
-                <div v-for="cat in categories" :key="cat">
+                <div v-for="cat in categories" :key="cat" ref="productsList">
                     <div v-if="groupedProducts[cat]" class="mb-2">
                         <h3 v-if="selectedCategory === 'all'"
                             :style="{ top: 'calc(' + searchBarHeight + 'px + env(safe-area-inset-top, 0px))' }"
