@@ -1398,9 +1398,13 @@
 
                         this.$nextTick(() => {
                             if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Get safe area height from overlay element (0 in browser, ~59px in PWA)
+                                // Get safe area height from overlay element via computed style
                                 const overlay = document.getElementById('pwa-status-bar-overlay');
-                                const safeAreaHeight = overlay ? overlay.offsetHeight : 0;
+                                let safeAreaHeight = 0;
+                                if (overlay) {
+                                    const style = getComputedStyle(overlay);
+                                    safeAreaHeight = parseFloat(style.height) || 0;
+                                }
 
                                 // Scroll target: header height minus safe area (because search sticks to safe-area top)
                                 let scrollTarget = this.$refs.mainHeader.offsetHeight - safeAreaHeight;
