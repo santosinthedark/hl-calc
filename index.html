@@ -1391,16 +1391,18 @@
                     card.style.setProperty('--mouse-y', `${y}px`);
                 },
                 fixSearchScroll() {
-                    // Mobile optimization: When search is focused, ensure it stays sticky at top
-                    // preventing the header from scrolling back down
+                    // Mobile/PWA optimization: When search is focused or category selected,
+                    // scroll to show search bar at top
                     if (window.innerWidth < 1024) {
                         this.updateSearchBarHeight();
 
                         this.$nextTick(() => {
                             if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Force scroll to exactly below the Main Header
-                                // This brings the Search Bar (sticky) and Results (static) into view
-                                this.$refs.mainScrollContainer.scrollTop = this.$refs.mainHeader.offsetHeight;
+                                // Scroll to position where search bar is at top (just below safe area)
+                                this.$refs.mainScrollContainer.scrollTo({
+                                    top: this.$refs.mainHeader.offsetHeight,
+                                    behavior: 'smooth'
+                                });
                             }
                         });
                     }
