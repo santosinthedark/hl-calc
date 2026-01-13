@@ -514,9 +514,9 @@
             padding-top: calc(1.25rem + env(safe-area-inset-top, 0px));
         }
 
-        /* PWA Safe Area Spacer - sticky блок вверху, перекрывает область под статус-баром при скролле */
+        /* PWA Safe Area Overlay - fixed блок вверху, перекрывает область под статус-баром */
         #pwa-status-bar-overlay {
-            position: sticky;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -524,7 +524,8 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            z-index: 100;
+            z-index: 9999;
+            pointer-events: none;
         }
 
         /* Sticky элементы сдвигаются на высоту safe-area */
@@ -535,6 +536,9 @@
 </head>
 
 <body>
+
+    <!-- PWA Safe Area Overlay - fixed блок вверху, перекрывает область под статус-баром -->
+    <div id="pwa-status-bar-overlay"></div>
 
     <div class="bg-noise"></div>
 
@@ -570,8 +574,6 @@
         <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] origin-top bg-white"
             :class="isCartOpen ? 'scale-[0.93] rounded-[2rem] opacity-80 translate-y-4' : 'scale-100 rounded-none opacity-100 translate-y-0'"
             ref="mainScrollContainer" style="scrollbar-gutter: stable;">
-            <!-- PWA Safe Area Overlay - sticky блок вверху, перекрывает область под статус-баром -->
-            <div id="pwa-status-bar-overlay"></div>
             <header ref="mainHeader"
                 class="pwa-header-padding bg-white/90 backdrop-blur-md px-6 pb-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm z-20">
                 <div class="flex items-center gap-3">
