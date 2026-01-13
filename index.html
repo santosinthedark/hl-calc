@@ -640,7 +640,7 @@
                 :class="{'min-h-[150vh]': searchQuery.length > 0}" style="scrollbar-gutter: stable;">
 
                 <!-- Search Bar (Moved Inside for Desktop Sticky Layering) -->
-                <div class="px-6 pt-4 pb-4 bg-slate-50/90 backdrop-blur-md border-b border-slate-200 sticky z-30 pwa-sticky-offset"
+                <div class="px-6 pt-4 pb-4 bg-white/95 backdrop-blur-md border-b border-slate-200 sticky z-30 pwa-sticky-offset"
                     ref="searchBar">
                     <div class="relative">
                         <input v-model="searchQuery" @focus="fixSearchScroll" @input="fixSearchScroll"
