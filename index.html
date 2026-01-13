@@ -663,9 +663,10 @@
                     </div>
 
                     <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
-                        <button @click="selectedCategory = 'all'; vibrate(15)"
+                        <button @click="selectedCategory = 'all'; fixSearchScroll(); vibrate(15)"
                             :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === 'all' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">Все</button>
-                        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat; vibrate(15)"
+                        <button v-for="cat in categories" :key="cat"
+                            @click="selectedCategory = cat; fixSearchScroll(); vibrate(15)"
                             :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === cat ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">
                             {{ cat }}
                         </button>
