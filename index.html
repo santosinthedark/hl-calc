@@ -1392,18 +1392,30 @@
                 },
                 fixSearchScroll() {
                     // Mobile/PWA optimization: When search is focused or category selected,
-                    // scroll so search bar is at top and list starts from first item
+                    // scroll so first product is visible right below search bar
                     if (window.innerWidth < 1024) {
                         this.updateSearchBarHeight();
 
                         this.$nextTick(() => {
-                            if (this.$refs.searchBar) {
-                                // Scroll search bar to top of visible area
-                                // This ensures list starts right below search
-                                this.$refs.searchBar.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'start'
-                                });
+                            // Get the first product list container
+                            const productsList = this.$refs.productsList;
+                            if (productsList && productsList.length > 0) {
+                                const firstList = productsList[0];
+
+                                // Calculate sticky offset (searchBar + safe-area)
+                                const searchBarEl = this.$refs.searchBar;
+                                const stickyOffset = searchBarEl ? searchBarEl.offsetHeight : 0;
+
+                                // Get position of first list relative to scroll container
+                                const container = this.$refs.mainScrollContainer;
+                                if (container && firstList) {
+                                    const listTop = firstList.offsetTop;
+                                    // Scroll so first product is visible below sticky searchBar
+                                    container.scrollTo({
+                                        top: listTop - stickyOffset,
+                                        behavior: 'smooth'
+                                    });
+                                }
                             }
                         });
                     }
