@@ -1391,26 +1391,18 @@
                     card.style.setProperty('--mouse-y', `${y}px`);
                 },
                 fixSearchScroll() {
-                    // Mobile optimization: When search is focused or category selected,
-                    // scroll past header so search sticks at top and list starts from first item
+                    // Mobile/PWA optimization: When search is focused or category selected,
+                    // scroll so search bar is at top and list starts from first item
                     if (window.innerWidth < 1024) {
                         this.updateSearchBarHeight();
 
-                        // Check if in PWA/standalone mode - skip auto-scroll in PWA
-                        const isPWA = window.navigator.standalone === true ||
-                            window.matchMedia('(display-mode: standalone)').matches;
-
-                        if (isPWA) {
-                            // In PWA mode, don't auto-scroll - user scrolls manually
-                            return;
-                        }
-
                         this.$nextTick(() => {
-                            if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Scroll past header so search sticks at top
-                                this.$refs.mainScrollContainer.scrollTo({
-                                    top: this.$refs.mainHeader.offsetHeight,
-                                    behavior: 'smooth'
+                            if (this.$refs.searchBar) {
+                                // Scroll search bar to top of visible area
+                                // This ensures list starts right below search
+                                this.$refs.searchBar.scrollIntoView({
+                                    behavior: 'smooth',
+                                    block: 'start'
                                 });
                             }
                         });
