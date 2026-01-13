@@ -1398,9 +1398,15 @@
 
                         this.$nextTick(() => {
                             if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Scroll to position where search bar is at top (just below safe area)
+                                // Get safe area height from overlay element (0 in browser, ~59px in PWA)
+                                const overlay = document.getElementById('pwa-status-bar-overlay');
+                                const safeAreaHeight = overlay ? overlay.offsetHeight : 0;
+
+                                // Scroll target: header height minus safe area (because search sticks to safe-area top)
+                                let scrollTarget = this.$refs.mainHeader.offsetHeight - safeAreaHeight;
+
                                 this.$refs.mainScrollContainer.scrollTo({
-                                    top: this.$refs.mainHeader.offsetHeight,
+                                    top: scrollTarget,
                                     behavior: 'smooth'
                                 });
                             }
