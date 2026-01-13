@@ -1402,8 +1402,8 @@
                                 const isPWA = window.navigator.standalone === true ||
                                     window.matchMedia('(display-mode: standalone)').matches;
 
-                                // In PWA mode, reduce scroll by ~60px (safe-area) so first item is visible
-                                const pwaOffset = isPWA ? 60 : 0;
+                                // In PWA mode, reduce scroll by ~120px (safe-area + extra) so first item is visible
+                                const pwaOffset = isPWA ? 120 : 0;
                                 const scrollTarget = this.$refs.mainHeader.offsetHeight - pwaOffset;
 
                                 this.$refs.mainScrollContainer.scrollTo({
