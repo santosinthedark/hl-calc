@@ -1396,24 +1396,29 @@
                     if (window.innerWidth < 1024) {
                         this.updateSearchBarHeight();
 
+                        // Use double $nextTick + setTimeout to wait for Vue re-render after category change
                         this.$nextTick(() => {
-                            if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Get actual safe-area-inset-top value using a temp element
-                                let safeAreaHeight = 0;
-                                const tempEl = document.createElement('div');
-                                tempEl.style.cssText = 'position:fixed;top:0;height:env(safe-area-inset-top,0px);pointer-events:none;';
-                                document.body.appendChild(tempEl);
-                                safeAreaHeight = tempEl.offsetHeight;
-                                document.body.removeChild(tempEl);
+                            this.$nextTick(() => {
+                                setTimeout(() => {
+                                    if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
+                                        // Get actual safe-area-inset-top value using a temp element
+                                        let safeAreaHeight = 0;
+                                        const tempEl = document.createElement('div');
+                                        tempEl.style.cssText = 'position:fixed;top:0;height:env(safe-area-inset-top,0px);pointer-events:none;';
+                                        document.body.appendChild(tempEl);
+                                        safeAreaHeight = tempEl.offsetHeight;
+                                        document.body.removeChild(tempEl);
 
-                                // Scroll target: header height minus safe area (because search sticks to safe-area top)
-                                let scrollTarget = this.$refs.mainHeader.offsetHeight - safeAreaHeight;
+                                        // Scroll target: header height minus safe area (because search sticks to safe-area top)
+                                        let scrollTarget = this.$refs.mainHeader.offsetHeight - safeAreaHeight;
 
-                                this.$refs.mainScrollContainer.scrollTo({
-                                    top: scrollTarget,
-                                    behavior: 'smooth'
-                                });
-                            }
+                                        this.$refs.mainScrollContainer.scrollTo({
+                                            top: scrollTarget,
+                                            behavior: 'smooth'
+                                        });
+                                    }
+                                }, 50);
+                            });
                         });
                     }
                 },
