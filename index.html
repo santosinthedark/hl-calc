@@ -1398,15 +1398,16 @@
 
                         this.$nextTick(() => {
                             if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Get safe-area height from overlay (for PWA adjustment)
-                                const overlay = document.getElementById('pwa-status-bar-overlay');
-                                const safeAreaHeight = overlay ? parseFloat(getComputedStyle(overlay).height) || 0 : 0;
+                                // Check if in PWA/standalone mode
+                                const isPWA = window.navigator.standalone === true ||
+                                    window.matchMedia('(display-mode: standalone)').matches;
 
-                                // Scroll to header height minus safe-area (so first item is fully visible)
-                                const scrollTarget = this.$refs.mainHeader.offsetHeight - safeAreaHeight;
+                                // In PWA mode, reduce scroll by ~60px (safe-area) so first item is visible
+                                const pwaOffset = isPWA ? 60 : 0;
+                                const scrollTarget = this.$refs.mainHeader.offsetHeight - pwaOffset;
 
                                 this.$refs.mainScrollContainer.scrollTo({
-                                    top: scrollTarget,
+                                    top: Math.max(0, scrollTarget),
                                     behavior: 'smooth'
                                 });
                             }
