@@ -902,15 +902,6 @@
                         </span>
 
                     </button>
-                    <!-- Кнопка "Красивый чек" -->
-                    <button @click="showReceiptModal = true"
-                        class="h-[52px] w-14 rounded-xl border border-slate-200 bg-white text-slate-400 shadow-sm flex items-center justify-center transition-all duration-300 hover:border-slate-300 hover:text-slate-600 active:scale-95">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
-                    </button>
                     <button @click="clearCart"
                         :class="['relative overflow-hidden h-[52px] rounded-xl border transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)] flex items-center justify-center gap-2 btn-delete', 
                             isClearing 
@@ -964,100 +955,6 @@
             </div>
         </Transition>
 
-        <!-- Модальное окно "Красивый чек" -->
-        <Transition name="fade">
-            <div v-if="showReceiptModal"
-                class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-                @click.self="showReceiptModal = false">
-
-                <div class="relative bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-                    <!-- Кнопка закрыть -->
-                    <button @click="showReceiptModal = false"
-                        class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center hover:bg-slate-200 hover:text-slate-600 transition-colors z-10">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-
-                    <!-- Шапка чека -->
-                    <div class="bg-gradient-to-br from-green-600 to-green-700 text-white p-6 rounded-t-3xl text-center">
-                        <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path
-                                    d="M16 2H8C5 2 3 4 3 7V17C3 20 5 22 8 22H16C19 22 21 20 21 17V7C21 4 19 2 16 2Z" />
-                                <path d="M10.5 7H13.5" />
-                                <path d="M7.5 12H8.5" />
-                                <path d="M11.5 12H12.5" />
-                                <path d="M15.5 12H16.5" />
-                                <path d="M7.5 16H8.5" />
-                                <path d="M11.5 16H12.5" />
-                                <path d="M15.5 16H16.5" />
-                            </svg>
-                        </div>
-                        <h2 class="text-xl font-bold">Ваш заказ Herbalife</h2>
-                        <p class="text-green-100 text-sm mt-1">{{ new Date().toLocaleDateString('ru-RU', { day:
-                            'numeric', month: 'long', year: 'numeric' }) }}</p>
-                    </div>
-
-                    <!-- Список товаров -->
-                    <div class="p-5">
-                        <div v-if="cart.length === 0" class="text-center py-8 text-slate-400">
-                            <p>Корзина пуста</p>
-                        </div>
-
-                        <div v-else class="space-y-3">
-                            <div v-for="item in cart" :key="'receipt-' + item.product.sku"
-                                class="flex justify-between items-start gap-3 pb-3 border-b border-slate-100 last:border-0 last:pb-0">
-                                <div class="flex-1 min-w-0">
-                                    <p class="font-medium text-slate-800 text-sm leading-tight">{{ item.product.name }}
-                                    </p>
-                                    <p class="text-xs text-slate-400 mt-0.5">{{ item.qty }} шт. × {{
-                                        formatCurrency(getPrice(item.product, clientDiscount)) }}</p>
-                                </div>
-                                <p class="font-bold text-slate-900 text-sm whitespace-nowrap">{{
-                                    formatCurrency(getPrice(item.product, clientDiscount) * item.qty) }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Итоги -->
-                        <div v-if="cart.length > 0" class="mt-5 pt-4 border-t-2 border-slate-100 space-y-2">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-slate-500">Товаров:</span>
-                                <span class="font-medium text-slate-700">{{ cartItemCount }} поз.</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-slate-500">Объёмные баллы:</span>
-                                <span class="font-medium text-slate-700">{{ formatNumber(totals.vp) }} VP</span>
-                            </div>
-                            <div v-if="hasDelivery && deliveryCost > 0" class="flex justify-between text-sm">
-                                <span class="text-slate-500">Доставка:</span>
-                                <span class="font-medium text-slate-700">{{ formatCurrency(deliveryCost) }}</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-slate-500">Скидка клиента:</span>
-                                <span class="font-medium text-slate-700">{{ clientDiscount === 100 ? 'Розница' :
-                                    clientDiscount + '%' }}</span>
-                            </div>
-
-                            <!-- Итого к оплате -->
-                            <div class="flex justify-between items-center pt-3 mt-3 border-t border-slate-200">
-                                <span class="text-base font-bold text-slate-800">Итого к оплате:</span>
-                                <span class="text-2xl font-bold text-green-600">{{ formatCurrency(totals.clientPrice +
-                                    (hasDelivery ? deliveryCost : 0)) }}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Футер чека -->
-                    <div class="bg-slate-50 p-4 rounded-b-3xl text-center">
-                        <p class="text-xs text-slate-400">Сформировано в Калькуляторе Herbalife</p>
-                    </div>
-                </div>
-            </div>
-        </Transition>
-
     </div>
 
     <!-- Toast Notification Removed -->
@@ -1090,7 +987,6 @@
                     orderCopied: false,
                     shakeError: false,
                     copyFeedbackText: 'Скопировано',
-                    showReceiptModal: false,
                     // Data parsed directly from your CSV file
                     rawDb: [
                         { cat: "Сбалансированное питание", sku: "2793", name: "Коктейль Формула 1", vp: 23.95, p50: 1853.79, p42: 2082.86, p35: 2283.29, p25: 2569.63, p15: 2855.96, p100: 3708 },
