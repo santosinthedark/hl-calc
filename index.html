@@ -1392,25 +1392,15 @@
                 },
                 fixSearchScroll() {
                     // Mobile/PWA optimization: When search is focused or category selected,
-                    // scroll to show search bar at top
+                    // scroll past header so search sticks at top and list starts from first item
                     if (window.innerWidth < 1024) {
                         this.updateSearchBarHeight();
 
                         this.$nextTick(() => {
                             if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Get safe area height from overlay element via computed style
-                                const overlay = document.getElementById('pwa-status-bar-overlay');
-                                let safeAreaHeight = 0;
-                                if (overlay) {
-                                    const style = getComputedStyle(overlay);
-                                    safeAreaHeight = parseFloat(style.height) || 0;
-                                }
-
-                                // Scroll target: header height minus safe area (because search sticks to safe-area top)
-                                let scrollTarget = this.$refs.mainHeader.offsetHeight - safeAreaHeight;
-
+                                // Always scroll to header height - this hides header and shows search + list
                                 this.$refs.mainScrollContainer.scrollTo({
-                                    top: scrollTarget,
+                                    top: this.$refs.mainHeader.offsetHeight,
                                     behavior: 'smooth'
                                 });
                             }
