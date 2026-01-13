@@ -1398,9 +1398,15 @@
 
                         this.$nextTick(() => {
                             if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
-                                // Always scroll to header height - this hides header and shows search + list
+                                // Get safe-area height from overlay (for PWA adjustment)
+                                const overlay = document.getElementById('pwa-status-bar-overlay');
+                                const safeAreaHeight = overlay ? parseFloat(getComputedStyle(overlay).height) || 0 : 0;
+
+                                // Scroll to header height minus safe-area (so first item is fully visible)
+                                const scrollTarget = this.$refs.mainHeader.offsetHeight - safeAreaHeight;
+
                                 this.$refs.mainScrollContainer.scrollTo({
-                                    top: this.$refs.mainHeader.offsetHeight,
+                                    top: scrollTarget,
                                     behavior: 'smooth'
                                 });
                             }
