@@ -663,17 +663,16 @@
                     </div>
 
                     <div class="flex gap-2 mt-3 overflow-x-auto pb-1 no-scrollbar">
-                        <button @click="selectedCategory = 'all'; fixSearchScroll(); vibrate(15)"
+                        <button @click="selectedCategory = 'all'; vibrate(15)"
                             :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === 'all' ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">Все</button>
-                        <button v-for="cat in categories" :key="cat"
-                            @click="selectedCategory = cat; fixSearchScroll(); vibrate(15)"
+                        <button v-for="cat in categories" :key="cat" @click="selectedCategory = cat; vibrate(15)"
                             :class="['whitespace-nowrap px-4 py-2 rounded-2xl text-xs font-medium transition-all duration-100 active:scale-90', selectedCategory === cat ? 'bg-green-600 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200']">
                             {{ cat }}
                         </button>
                     </div>
                 </div>
 
-                <div v-for="cat in categories" :key="cat" ref="productsList">
+                <div v-for="cat in categories" :key="cat">
                     <div v-if="groupedProducts[cat]" class="mb-2">
                         <h3 v-if="selectedCategory === 'all'"
                             :style="{ top: 'calc(' + searchBarHeight + 'px + env(safe-area-inset-top, 0px))' }"
@@ -1391,31 +1390,16 @@
                     card.style.setProperty('--mouse-y', `${y}px`);
                 },
                 fixSearchScroll() {
-                    // Mobile/PWA optimization: When search is focused or category selected,
-                    // scroll so first product is visible right below search bar
+                    // Mobile optimization: When search is focused, ensure it stays sticky at top
+                    // preventing the header from scrolling back down
                     if (window.innerWidth < 1024) {
                         this.updateSearchBarHeight();
 
                         this.$nextTick(() => {
-                            // Get the first product list container
-                            const productsList = this.$refs.productsList;
-                            if (productsList && productsList.length > 0) {
-                                const firstList = productsList[0];
-
-                                // Calculate sticky offset (searchBar + safe-area)
-                                const searchBarEl = this.$refs.searchBar;
-                                const stickyOffset = searchBarEl ? searchBarEl.offsetHeight : 0;
-
-                                // Get position of first list relative to scroll container
-                                const container = this.$refs.mainScrollContainer;
-                                if (container && firstList) {
-                                    const listTop = firstList.offsetTop;
-                                    // Scroll so first product is visible below sticky searchBar
-                                    container.scrollTo({
-                                        top: listTop - stickyOffset,
-                                        behavior: 'smooth'
-                                    });
-                                }
+                            if (this.$refs.mainScrollContainer && this.$refs.mainHeader) {
+                                // Force scroll to exactly below the Main Header
+                                // This brings the Search Bar (sticky) and Results (static) into view
+                                this.$refs.mainScrollContainer.scrollTop = this.$refs.mainHeader.offsetHeight;
                             }
                         });
                     }
