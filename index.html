@@ -52,12 +52,15 @@
         /* Контейнер для центрирования контента прелоадера */
         #preloader-content {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            /* Центрирование через inset + margin:auto — не зависит от размера контента */
+            inset: 0;
+            margin: auto;
+            width: 10rem;
+            height: 10rem;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             z-index: 10;
         }
 
