@@ -116,8 +116,9 @@
     <script>
         (function () {
             const urls = [
+                './tailwind.js', // Локальный файл — самый быстрый и надёжный
                 'https://cdn.tailwindcss.com',
-                'https://cdn.jsdelivr.net/npm/@tailwindcss/cdn@4'
+                'https://cdn.jsdelivr.net/npm/@aspect-build/tailwindcss-cdn@0.0.4/dist/tailwind.min.js'
             ];
             let loaded = false;
 
@@ -128,8 +129,10 @@
                     script.onload = () => resolve(true);
                     script.onerror = () => reject();
                     document.head.appendChild(script);
-                    // Таймаут 5 секунд
-                    setTimeout(() => reject(), 5000);
+                    // Таймаут 5 секунд для внешних CDN
+                    if (!url.startsWith('./')) {
+                        setTimeout(() => reject(), 5000);
+                    }
                 });
             }
 
@@ -139,6 +142,7 @@
                     try {
                         await loadScript(url);
                         loaded = true;
+                        console.log('Tailwind загружен с:', url);
                         return;
                     } catch (e) {
                         console.log('Tailwind: не удалось загрузить с', url);
@@ -1699,9 +1703,25 @@
                             }
                         }
 
-                        // Chrome iOS: открываем изображение в новой вкладке
+                        // Chrome iOS: копируем изображение в буфер обмена
                         if (isChromeIOS) {
                             const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+
+                            // Пробуем Clipboard API
+                            if (navigator.clipboard && navigator.clipboard.write) {
+                                try {
+                                    await navigator.clipboard.write([
+                                        new ClipboardItem({ 'image/png': blob })
+                                    ]);
+                                    this.vibrate(30);
+                                    this.showReceiptToast('Чек скопирован! Вставьте в чат');
+                                    return;
+                                } catch (clipErr) {
+                                    console.log('Clipboard API не сработал в Chrome iOS');
+                                }
+                            }
+
+                            // Fallback: открываем в новой вкладке
                             const blobUrl = URL.createObjectURL(blob);
                             window.open(blobUrl, '_blank');
                             this.vibrate(30);
