@@ -1599,12 +1599,12 @@
             },
             methods: {
                 // Показать уведомление в чеке
-                showReceiptToast(message) {
+                showReceiptToast(message, duration = 2000) {
                     this.receiptToast = message;
                     this.receiptToastVisible = true;
                     setTimeout(() => {
                         this.receiptToastVisible = false;
-                    }, 2000);
+                    }, duration);
                 },
 
                 // Ленивая загрузка html2canvas
@@ -1725,7 +1725,7 @@
                             const blobUrl = URL.createObjectURL(blob);
                             window.open(blobUrl, '_blank');
                             this.vibrate(30);
-                            this.showReceiptToast('Удерживайте для сохранения');
+                            this.showReceiptToast('Зажмите картинку → Сохранить', 4000);
                             return;
                         }
 
