@@ -60,9 +60,19 @@
             filter: blur(80px);
         }
 
-        #preloader-icon {
-            position: relative;
+        /* Контейнер для центрирования контента прелоадера */
+        #preloader-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             z-index: 10;
+        }
+
+        #preloader-icon {
             width: 5rem;
             height: 5rem;
             background: #16a34a;
@@ -76,8 +86,6 @@
         }
 
         #preloader-text {
-            position: relative;
-            z-index: 10;
             margin-top: 1.5rem;
             font-size: 1.25rem;
             font-weight: 700;
@@ -709,21 +717,23 @@
     <div id="preloader">
         <div id="preloader-glow"></div>
 
-        <div id="preloader-icon">
-            <svg style="width: 2.5rem; height: 2.5rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 2H8C5 2 3 4 3 7V17C3 20 5 22 8 22H16C19 22 21 20 21 17V7C21 4 19 2 16 2Z" />
-                <path d="M10.5 7H13.5" />
-                <path d="M7.5 12H8.5" />
-                <path d="M11.5 12H12.5" />
-                <path d="M15.5 12H16.5" />
-                <path d="M7.5 16H8.5" />
-                <path d="M11.5 16H12.5" />
-                <path d="M15.5 16H16.5" />
-            </svg>
-        </div>
+        <div id="preloader-content">
+            <div id="preloader-icon">
+                <svg style="width: 2.5rem; height: 2.5rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 2H8C5 2 3 4 3 7V17C3 20 5 22 8 22H16C19 22 21 20 21 17V7C21 4 19 2 16 2Z" />
+                    <path d="M10.5 7H13.5" />
+                    <path d="M7.5 12H8.5" />
+                    <path d="M11.5 12H12.5" />
+                    <path d="M15.5 12H16.5" />
+                    <path d="M7.5 16H8.5" />
+                    <path d="M11.5 16H12.5" />
+                    <path d="M15.5 16H16.5" />
+                </svg>
+            </div>
 
-        <p id="preloader-text">Загрузка...</p>
+            <p id="preloader-text">Загрузка...</p>
+        </div>
     </div>
 
     <div id="app" class="h-screen h-[100dvh] flex flex-col lg:flex-row overflow-hidden text-slate-800 bg-slate-50"
