@@ -66,6 +66,26 @@
             z-index: 10;
         }
 
+        /* Специально для PWA: скрываем контент в начале, чтобы не было видно "прыжков" layout */
+        @media all and (display-mode: standalone) {
+            #preloader-content {
+                opacity: 0;
+                animation: pwa-fade-in 0.6s ease-out 0.4s forwards;
+            }
+        }
+
+        @keyframes pwa-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         #preloader-icon {
             width: 5rem;
             height: 5rem;
