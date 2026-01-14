@@ -25,6 +25,11 @@
             left: 0;
             right: 0;
             bottom: 0;
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            /* Dynamic viewport height для iOS */
             z-index: 9999;
             background: #f8fafc;
             display: flex;
@@ -671,7 +676,7 @@
         <p id="preloader-text">Загрузка...</p>
     </div>
 
-    <div id="app" class="h-screen h-[100dvh] flex flex-col lg:flex-row overflow-hidden text-slate-800 bg-slate-900"
+    <div id="app" class="h-screen h-[100dvh] flex flex-col lg:flex-row overflow-hidden text-slate-800 bg-slate-50"
         style="overscroll-behavior-y: none; visibility: hidden;">
 
         <div class="flex-1 flex flex-col h-full relative z-10 overflow-y-auto lg:overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] origin-top bg-white"
@@ -857,8 +862,7 @@
 
         <!-- Mobile Cart Backdrop -->
         <div v-if="isCartOpen" @click="isCartOpen = false"
-            class="fixed inset-0 bg-slate-900/40 z-50 lg:hidden backdrop-blur-md transition-opacity"
-            style="display: none;" :style="{ display: isCartOpen ? 'block' : 'none' }"></div>
+            class="fixed inset-0 bg-slate-900/40 z-50 lg:hidden backdrop-blur-md transition-opacity"></div>
 
         <!-- Cart Sidebar / Bottom Sheet -->
         <div
@@ -1569,8 +1573,9 @@
                     if (this.html2canvasLoaded) return;
 
                     const urls = [
-                        'https://html2canvas.hertzen.com/dist/html2canvas.min.js',
-                        'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
+                        './html2canvas.min.js', // Локальный файл — самый быстрый и надёжный
+                        'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js',
+                        'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js'
                     ];
 
                     for (const url of urls) {
