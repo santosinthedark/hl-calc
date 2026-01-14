@@ -33,9 +33,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            /* Учитываем safe-area чтобы приблизиться к нативному сплэшу */
+            /* Учитываем только верхний safe-area, так как iOS splash screen может игнорировать низ */
             padding-top: env(safe-area-inset-top, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px);
+            padding-bottom: 0;
             box-sizing: border-box;
             transition: opacity 0.7s ease-out;
         }
