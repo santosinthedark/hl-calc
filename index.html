@@ -166,13 +166,29 @@
     "></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Скрыть debug indicator от Tailwind Play CDN */
+        [data-tailwind-cdn-indicator] {
+            display: none !important;
+        }
+
+        .fixed.right-4.bottom-4 {
+            display: none !important;
+        }
+
+        /* Скрыть индикатор размера экрана (правый верхний угол) */
+        .fixed.top-0.right-0,
+        body>div:last-child[style*="fixed"] {
+            display: none !important;
+        }
+
         html {
             scroll-behavior: auto;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            background-color: #f8fafc;
+            /* Цвет прелоадера для safe area */
         }
 
         ::selection {
