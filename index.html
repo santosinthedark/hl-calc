@@ -153,7 +153,43 @@
             tryLoad();
         })();
     </script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <!-- Vue.js с fallback -->
+    <script>
+        (function () {
+            const urls = [
+                './vue.js', // Локальный файл
+                'https://unpkg.com/vue@3/dist/vue.global.prod.js',
+                'https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js'
+            ];
+
+            function loadScript(url) {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = url;
+                    script.onload = () => resolve(true);
+                    script.onerror = () => reject();
+                    document.head.appendChild(script);
+                    if (!url.startsWith('./')) {
+                        setTimeout(() => reject(), 5000);
+                    }
+                });
+            }
+
+            async function tryLoad() {
+                for (const url of urls) {
+                    try {
+                        await loadScript(url);
+                        console.log('Vue загружен с:', url);
+                        return;
+                    } catch (e) {
+                        console.log('Vue: не удалось загрузить с', url);
+                    }
+                }
+            }
+
+            tryLoad();
+        })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         html {
@@ -1721,11 +1757,15 @@
                                 }
                             }
 
-                            // Fallback: открываем в новой вкладке
+                            // Fallback: сначала показываем инструкцию, потом открываем вкладку
                             const blobUrl = URL.createObjectURL(blob);
-                            window.open(blobUrl, '_blank');
                             this.vibrate(30);
                             this.showReceiptToast('Зажмите картинку → Сохранить', 4000);
+
+                            // Задержка чтобы пользователь успел прочитать
+                            setTimeout(() => {
+                                window.open(blobUrl, '_blank');
+                            }, 1500);
                             return;
                         }
 
